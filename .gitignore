@@ -183,4 +183,4 @@ workspace/
 config/config.toml
 
 # Desktop runtime
-desktop/frontend/wailsjs/
+desktop/frontend/wailsjs/runtime/

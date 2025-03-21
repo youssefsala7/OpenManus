@@ -47,7 +47,7 @@ export default {
   },
   newTask: "New Task",
   readConfigSuccess: "Read config success",
-  readConfigFailed: "Read config failed",
+  readTomlFailed: "Read config failed",
   baseConfig: "Base Settings",
   serverConfig: "Server Config",
 }

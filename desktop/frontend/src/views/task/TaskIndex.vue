@@ -130,7 +130,7 @@ const buildEventSource = (taskId) => {
   loading.value = true
   eventSource.value = new EventSource('http://localhost:5172/tasks/' + taskId + '/events')
   eventSource.value.onmessage = (event) => {
-    console.log('Received data:', event.data)
+    // console.log('Received data:', event.data)
     // 在这里处理接收到的数据 不起作用
   }
 
@@ -150,16 +150,16 @@ const buildEventSource = (taskId) => {
 }
 
 const handleEvent = (event, type) => {
-  console.log('Received event, type:', type, event.data)
+  // console.log('Received event, type:', type, event.data)
   //  clearInterval(heartbeatTimer);
   try {
     const data = JSON.parse(event.data);
-    console.log("type:", type, "data:", data)
+    // console.log("type:", type, "data:", data)
     if (eventSource.value.readyState === EventSource.CLOSED) {
-      console.log('Connection is closed');
+      // console.log('Connection is closed');
     }
     if (type == "complete" || data.status == "completed") {
-      console.log('task completed');
+      // console.log('task completed');
       loading.value = false
       eventSource.value.close()
       taskInfo.value.status = "success"
@@ -176,9 +176,9 @@ const handleEvent = (event, type) => {
 async function buildOutput(taskId) {
   // 同步执行,确保数据顺序
   await utils.awaitGet('http://localhost:5172/tasks/' + taskId).then(data => {
-    console.log("task info resp:", data)
+    // console.log("task info resp:", data)
     buildStepList(data.steps)
-    console.log("stepList:", taskInfo.value.stepList)
+    // console.log("stepList:", taskInfo.value.stepList)
     // 滚动到底部
     setTimeout(() => {
       scrollToBottom()
@@ -216,10 +216,10 @@ const buildStepList = (steps) => {
         createdDt: utils.dateFormat(new Date())
       }
       // 判定添加到stepList中的哪个元素元素的subList中
-      console.log("stepList:", taskInfo.value.stepList, "idx:", idx)
+      // console.log("stepList:", taskInfo.value.stepList, "idx:", idx)
       let parentStep = null
       const pStepIndex = taskInfo.value.stepList.findIndex(parentStep => parentStep.idx > idx)
-      console.log("pStepIndex:", pStepIndex)
+      // console.log("pStepIndex:", pStepIndex)
       if (pStepIndex != -1) {
         // 取pStep的上一个元素
         parentStep = taskInfo.value.stepList[pStepIndex - 1]
@@ -227,7 +227,7 @@ const buildStepList = (steps) => {
         // 不存在时, 添加到stepList最后一个元素末尾
         parentStep = taskInfo.value.stepList[taskInfo.value.stepList.length - 1]
       }
-      console.log("parentStep:", parentStep)
+      // console.log("parentStep:", parentStep)
       const existSubStep = parentStep.subList.find(existSubStep => existSubStep.idx == idx)
       if (!existSubStep) {
         // 不存在时, 添加到末尾
@@ -247,7 +247,7 @@ onUnmounted(() => {
 })
 
 function handleInputEnter(event) {
-  console.log("handleInputEnter:", event)
+  // console.log("handleInputEnter:", event)
   event.preventDefault()
   sendPrompt()
 }
@@ -258,7 +258,7 @@ function uploadFile() {
 
 const scrollToBottom = () => {
   if (scrollRef.value) {
-    console.log("scrollRef:", scrollRef.value, scrollRef.value.wrapRef)
+    // console.log("scrollRef:", scrollRef.value, scrollRef.value.wrapRef)
     const container = scrollRef.value.wrapRef
     if (container) {
       container.scrollTop = container.scrollHeight
@@ -303,16 +303,16 @@ function sendPrompt() {
     // 建立新的EventSource连接
     buildEventSource(data.task_id)
 
-    console.log("new task created:", newTask)
+    // console.log("new task created:", newTask)
   }).catch(error => {
     console.error('Failed to create task:', error)
   })
 }
 
 function stop() {
-  console.log("stop")
+  // console.log("stop")
   loading.value = false
-  console.log("eventSource:", eventSource.value, "taskInfo:", taskInfo.value)
+  // console.log("eventSource:", eventSource.value, "taskInfo:", taskInfo.value)
   if (eventSource.value != null) {
     eventSource.value.close()
   }
@@ -322,7 +322,7 @@ function stop() {
 }
 
 function startNewTask() {
-  console.log("startNewTask:", taskInfo.value)
+  // console.log("startNewTask:", taskInfo.value)
   if (taskInfo.value.status == "running") {
     utils.pop("请先终止当前任务", "error")
     return

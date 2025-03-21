@@ -46,7 +46,7 @@ export default {
   },
   newTask: "新任务",
   readConfigSuccess: "读取配置成功",
-  readConfigFailed: "读取配置失败",
+  readTomlFailed: "读取配置失败",
   baseConfig: "基础设置",
   serverConfig: "服务器配置",
 }
