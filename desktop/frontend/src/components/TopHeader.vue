@@ -55,23 +55,25 @@
 </template>
 
 <script setup>
-import { onMounted, ref } from 'vue'
+import { onMounted, ref, reactive, inject } from 'vue'
 import { ArrowDown, Refresh, Moon, Sunny } from '@element-plus/icons-vue'
 import { useConfig } from '@/store/config'
 /** 暗黑主题切换 */
 import { useDark } from '@vueuse/core'
 
+const utils = inject("utils")
+const files = inject("files")
 const config = useConfig()
 const isDark = useDark()
 
-const modelList = ref(config.modelList)
+const modelList = ref([])
 
-const selectedModel = ref(config.selectedModel != null ? config.selectedModel : modelList.value[0])
-
+const selectedModel = ref(config.selectedModel)
 
 function handleSwitchModel(mod) {
   // console.log("handleSwitchModel:", model)
   selectedModel.value = mod
+  config.setSelectedModel(mod)
 }
 
 const langList = ref(config.langList)
@@ -84,6 +86,43 @@ function handleSwitchLang(lang) {
   // i18n.locale = lang.code
   location.reload()
 }
+
+const llmConfig = reactive({
+  model: null,
+  base_url: null,
+  api_key: null,
+  max_tokens: null,
+  temperature: null,
+})
+
+function loadLlmConfig() {
+  const filePath = "@/../../config/config.toml"
+  files.readTomlNode(filePath, "llm").then((node) => {
+    console.log("config/config.toml: ", node)
+    if (utils.isBlank(node)) {
+      utils.pop(t('readTomlFailed'))
+      return
+    }
+    utils.copyProps(node, llmConfig)
+    let model = node.model
+    if (utils.isBlank(model)) {
+      model = "No Model"
+    }
+    if (model.startsWith("\"")) {
+      model = model.substring(1)
+    }
+    if (model.endsWith("\"")) {
+      model = model.substring(0, model.length - 1)
+    }
+    utils.clearArray(modelList.value)
+    modelList.value.push(model)
+  })
+}
+
+onMounted(() => {
+  // 读取配置文件config/config.toml
+  loadLlmConfig()
+})
 
 function refresh() {
   location.reload()

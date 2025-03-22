@@ -11,7 +11,6 @@ export const useConfig = defineStore("config", {
       // 菜单是否折叠
       menuCollapse: false,
       selectedModel: null,
-      modelList: ['qwen2.5-7b', 'deepseek-r1-7b'],
       selectedLang: { code: 'en', name: 'English' },
       langList: [{ code: 'en', name: 'English' }, { code: 'zhCn', name: '简体中文' }],
       taskHistory: [
@@ -46,14 +45,6 @@ export const useConfig = defineStore("config", {
 
     setSelectedModel(selectedModel) {
       this.selectedModel = selectedModel
-    },
-
-    getModelList() {
-      return this.modelList
-    },
-
-    setModelList(modelList) {
-      utils.copyArray(modelList, this.modelList)
     },
 
     getSelectedLang() {

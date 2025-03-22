@@ -289,8 +289,8 @@ li {
   border-right: none;
   --el-menu-item-height: 40px;
   --el-menu-sub-item-height: 36px;
-  padding-top: 10px;
-  padding-bottom: 10px;
+  padding-top: 6px;
+  padding-bottom: 6px;
 }
 
 .el-menu-custom .el-menu--collapse {

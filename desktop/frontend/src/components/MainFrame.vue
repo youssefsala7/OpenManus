@@ -3,8 +3,8 @@
     <el-aside width="collapse" class="layout-aside" :class="shrink ? 'shrink' : ''">
       <div :class="menuCollapse ? 'fixed-menu-collapse fxc' : 'fixed-menu-expand fxsb'">
         <div v-show="!menuCollapse" class="menu-logo">
-          <el-link type="primary" @click="refresh" class="pl-20 pr-4">
-            <img src="@/assets/img/logo-sm.png" class="fxc" height="34px" alt="logo" />
+          <el-link type="primary" @click="refresh" class="pl-16 pr-4">
+            <img :src="logoImgUrl" class="fxc" height="26px" alt="logo" />
           </el-link>
         </div>
         <el-link class="plr-10 w-56" @click="menuToggle">
@@ -60,9 +60,16 @@ import { showShade, closeShade } from '@/assets/js/shade'
 import { useConfig } from '@/store/config'
 import { useEventListener } from '@vueuse/core'
 import { storeToRefs } from 'pinia'
+import { useDark } from '@vueuse/core'
 
 const router = useRouter()
 const config = useConfig()
+const isDark = useDark()
+
+const logoImgUrl = computed(() => {
+  console.log("isDark:", isDark.value)
+  return isDark.value ? 'src/assets/img/logo-w-sm.png' : 'src/assets/img/logo-b-sm.png'
+})
 
 const { shrink, menuCollapse } = storeToRefs(config)
 const currentRoute = reactive(router.currentRoute)

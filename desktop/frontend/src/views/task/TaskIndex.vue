@@ -104,6 +104,7 @@ import { useConfig } from '@/store/config'
 import { useI18n } from 'vue-i18n'
 
 const utils = inject('utils')
+const files = inject('files')
 const config = useConfig()
 const { t } = useI18n()
 
@@ -122,13 +123,18 @@ const taskInfo = computed(() => {
   return config.getCurrTask()
 })
 
+const serverConfig = ({
+  host: null,
+  port: null,
+})
+
 const loading = ref(false)
 const scrollRef = ref(null)
 
 // 建立EventSource连接
 const buildEventSource = (taskId) => {
   loading.value = true
-  eventSource.value = new EventSource('http://localhost:5172/tasks/' + taskId + '/events')
+  eventSource.value = new EventSource(remoteBaseUrl.value + '/tasks/' + taskId + '/events')
   eventSource.value.onmessage = (event) => {
     // console.log('Received data:', event.data)
     // 在这里处理接收到的数据 不起作用
@@ -175,7 +181,7 @@ const handleEvent = (event, type) => {
 
 async function buildOutput(taskId) {
   // 同步执行,确保数据顺序
-  await utils.awaitGet('http://localhost:5172/tasks/' + taskId).then(data => {
+  await utils.awaitGet(remoteBaseUrl.value + '/tasks/' + taskId).then(data => {
     // console.log("task info resp:", data)
     buildStepList(data.steps)
     // console.log("stepList:", taskInfo.value.stepList)
@@ -239,6 +245,23 @@ const buildStepList = (steps) => {
 
 }
 
+onMounted(() => {
+  // 读取配置文件config/config.toml
+  loadServerConfig()
+})
+
+function loadServerConfig() {
+  const filePath = "@/../../config/config.toml"
+  files.readTomlNode(filePath, "server").then((node) => {
+    console.log("config/config.toml: ", node)
+    if (utils.isBlank(node)) {
+      utils.pop(t('readTomlFailed'))
+      return
+    }
+    utils.copyProps(node, serverConfig)
+  })
+}
+
 onUnmounted(() => {
   // 组件卸载时关闭EventSource连接
   if (eventSource.value) {
@@ -284,7 +307,7 @@ function sendPrompt() {
     eventSource.value.close()
   }
 
-  utils.post('http://localhost:5172/tasks', { prompt: prompt.value }).then(data => {
+  utils.post(remoteBaseUrl.value + '/tasks', { prompt: prompt.value }).then(data => {
     if (!data.task_id) {
       throw new Error('Invalid task ID')
     }
@@ -331,6 +354,29 @@ function startNewTask() {
   prompt.value = ''
 }
 
+
+const remoteBaseUrl = computed(() => {
+  let url
+  if (utils.notBlank(serverConfig.host)) {
+    url = serverConfig.host
+    if (url.startsWith("\"")) {
+      url = url.substring(1)
+    }
+    if (url.endsWith("\"")) {
+      url = url.substring(0, url.length - 1)
+    }
+    if (utils.notBlank(serverConfig.port)) {
+      url = url + ":" + serverConfig.port
+    }
+    if (!url.startsWith("http")) {
+      url = "http://" + url
+    }
+  } else {
+    // default
+    url = "http://localhost:5172"
+  }
+  return url
+})
 
 </script>
 
