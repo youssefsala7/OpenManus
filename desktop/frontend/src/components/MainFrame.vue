@@ -3,7 +3,7 @@
     <el-aside width="collapse" class="layout-aside" :class="shrink ? 'shrink' : ''">
       <div :class="menuCollapse ? 'fixed-menu-collapse fxc' : 'fixed-menu-expand fxsb'">
         <div v-show="!menuCollapse" class="menu-logo">
-          <el-link type="primary" @click="refresh" class="pl-12 pr-4">
+          <el-link type="primary" @click="refresh" class="pl-14 pr-4">
             <img :src="logoImgUrl" class="fxc" height="26px" alt="logo" />
           </el-link>
         </div>
@@ -129,9 +129,8 @@ function onAdaptiveLayout() {
 
 watch(() => router.currentRoute.value, (newValue, oldValue) => {
   // Toggle the menu when the route changes
-  menuToggle()
+  onAdaptiveLayout()
 })
-
 
 onBeforeMount(() => {
   onAdaptiveLayout()
@@ -165,7 +164,6 @@ header {
 }
 
 aside {
-  background-color: var(--el-fg-color);
   z-index: 9999999;
 }
 
@@ -231,7 +229,6 @@ main {
 
 .fixed-menu-expand {
   position: fixed;
-  z-index: 9999;
   height: 44px;
   width: 200px;
   /* Reference to the keyframes */
@@ -240,12 +237,13 @@ main {
   animation-duration: v-bind('menuAnimationDuration');
   animation-timing-function: ease-in-out;
   background-color: var(--el-fg-color);
+  /* border-bottom: 1px solid var(--el-bg-color); */
   z-index: 9999999;
 }
 
 .scrollbar-menu-wrapper {
-  top: 44px;
-  height: calc(100vh - 44px);
+  top: 45px;
+  height: calc(100vh - 45px);
   background-color: var(--el-fg-color);
 }
 

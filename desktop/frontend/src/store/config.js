@@ -14,7 +14,7 @@ export const useConfig = defineStore("config", {
       resizeCollapse: false,
       selectedModel: null,
       selectedLang: { code: 'en', name: 'English' },
-      langList: [{ code: 'en', name: 'English' }, { code: 'zhCn', name: '简体中文' }],
+      langList: [{ code: 'en', name: 'English' }, { code: 'zhCn', name: '中文' }],
       taskHistory: [
         // taskId, prompt, stepList, status, createdDt
       ]

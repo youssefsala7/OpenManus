@@ -116,6 +116,9 @@ function loadLlmConfig() {
     }
     utils.clearArray(modelList.value)
     modelList.value.push(model)
+    if (selectedModel.value == null) {
+      config.setSelectedModel(modelList.value[0])
+    }
   })
 }
 
@@ -141,7 +144,7 @@ function refresh() {
 .el-dropdown-link {
   text-align: center;
   cursor: pointer;
-  min-width: 80px;
+  min-width: 40px;
   color: var(--el-color-primary);
   display: flex;
   align-items: center;

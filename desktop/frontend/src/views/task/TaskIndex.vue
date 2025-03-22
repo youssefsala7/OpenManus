@@ -48,6 +48,22 @@
                 </el-timeline-item>
               </el-timeline>
             </div>
+            <div class="card-row-aline wp-100">
+              <div class="progress-area">
+                <div class="fc">
+                  <el-progress type="dashboard" :percentage="progress.percentage" :status="progress.status" :stroke-width="8" width="80">
+                    <template #default="{ percentage }">
+                      <span class="percentage-value">{{ percentage }}%</span>
+                    </template>
+                  </el-progress>
+                  <el-text class="mt--16">{{ taskInfo.status }}</el-text>
+                </div>
+              </div>
+              <div class="output fxc">
+                <div class="output-label">output</div>
+                <div class="output-folder">Generated Files...</div>
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -55,7 +71,7 @@
 
     <div class="input-area">
 
-      <div class="input-tools">
+      <!-- <div class="input-tools">
         <div class="new-task" v-show="!newTaskFlag">
           <el-button round @click="startNewTask">
             <el-icon :size="16">
@@ -69,7 +85,7 @@
           <el-text class="pr-10">{{ t('taskStatus.name') }}:</el-text>
           <el-text>{{ taskInfo.status }}</el-text>
         </div>
-      </div>
+      </div> -->
 
       <div class="input-box">
         <el-icon @click="uploadFile" class="add-file-area" :size="24">
@@ -121,6 +137,11 @@ const taskInfo = computed(() => {
     return {}
   }
   return config.getCurrTask()
+})
+
+const progress = reactive({
+  percentage: 0,
+  status: null
 })
 
 const serverConfig = ({
@@ -200,6 +221,7 @@ const buildStepList = (steps) => {
     if (step.type == "log" && step.result.startsWith("Executing step")) {
       const stepStr = step.result.replace("Executing step ", "").replace("\n", "")
       const stepNo = stepStr.split("/")[0]
+      const stepCount = stepStr.split("/")[1]
       if (taskInfo.value.stepList.length < stepNo) {
         // 添加此step到stepList
         const parentStep = {
@@ -211,6 +233,7 @@ const buildStepList = (steps) => {
           createdDt: utils.dateFormat(new Date())
         }
         taskInfo.value.stepList.push(parentStep)
+        progress.percentage = Math.floor((stepNo / stepCount) * 100)
         return
       }
     } else {
@@ -512,5 +535,32 @@ const remoteBaseUrl = computed(() => {
 .sub-step-time {
   color: var(--el-text-color-secondary);
   font-size: 12px;
+}
+
+.percentage-value {
+  display: block;
+  font-size: 18px;
+}
+
+.progress-area {
+  flex-grow: 0;
+}
+
+.output {
+  flex-grow: 1;
+  width: 100%;
+  padding-left: 16px;
+}
+
+.output-label {
+  writing-mode: vertical-lr;
+}
+
+.output-folder {
+  width: 100%;
+  min-height: 60px;
+  margin-left: 16px;
+  background-color: var(--el-bg-color);
+  border-radius: 6px;
 }
 </style>

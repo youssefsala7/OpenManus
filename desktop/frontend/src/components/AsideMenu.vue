@@ -118,9 +118,9 @@ watch(() => router.currentRoute.value.path, (newValue, oldValue) => {
 function activeMenu() {
   const currRoute = router.currentRoute
   const path = currRoute.value.path
-  console.log("currRoute path:", path)
+  // console.log("currRoute path:", path)
   let index = getIndexByPath(path)
-  console.log("index:", index)
+  // console.log("index:", index)
   if (utils.notNull(index)) {
     return index
   }
@@ -128,9 +128,9 @@ function activeMenu() {
   const lastIndex = path.lastIndexOf('/')
   if (lastIndex != -1) {
     const newPath = path.substring(0, lastIndex)
-    console.log("newPath from parent path:", newPath)
+    // console.log("newPath from parent path:", newPath)
     index = getIndexByPath(newPath)
-    console.log("index from parent path:", index)
+    // console.log("index from parent path:", index)
     if (utils.notNull(index)) {
       return index
     }
@@ -279,26 +279,28 @@ li {
   font-size: 15px;
 }
 
-/** When the menu is collapsed, redefine the hover menu height */
-.el-menu-item {
-  min-width: 44px;
-  height: 36px;
-  line-height: 36px;
-}
-
 .el-menu-custom {
   border-right: none;
   --el-menu-item-height: 40px;
   --el-menu-sub-item-height: 36px;
   padding-top: 6px;
   padding-bottom: 6px;
+  margin-left: 6px;
+  margin-right: 6px;
+}
+
+/** When the menu is collapsed, redefine the hover menu height */
+.el-menu-item {
+  min-width: 32px;
+  height: 36px;
+  line-height: 36px;
 }
 
 .el-menu-custom .el-menu--collapse {
-  width: 44px;
+  width: 32px;
 }
 
 .el-menu-custom:not(.el-menu--collapse) {
-  width: 200px;
+  width: 188px;
 }
 </style>
