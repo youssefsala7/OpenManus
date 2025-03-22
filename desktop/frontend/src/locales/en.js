@@ -50,4 +50,5 @@ export default {
   readTomlFailed: "Read config failed",
   baseConfig: "Base Settings",
   serverConfig: "Server Config",
+  inDevelopment: "In development, not currently supported.",
 }

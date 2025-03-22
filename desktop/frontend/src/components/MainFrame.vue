@@ -3,7 +3,7 @@
     <el-aside width="collapse" class="layout-aside" :class="shrink ? 'shrink' : ''">
       <div :class="menuCollapse ? 'fixed-menu-collapse fxc' : 'fixed-menu-expand fxsb'">
         <div v-show="!menuCollapse" class="menu-logo">
-          <el-link type="primary" @click="refresh" class="pl-16 pr-4">
+          <el-link type="primary" @click="refresh" class="pl-12 pr-4">
             <img :src="logoImgUrl" class="fxc" height="26px" alt="logo" />
           </el-link>
         </div>
@@ -66,12 +66,15 @@ const router = useRouter()
 const config = useConfig()
 const isDark = useDark()
 
+const { shrink, collapse, resizeCollapse } = storeToRefs(config)
+
+const menuCollapse = computed(() => collapse.value || resizeCollapse.value)
+
 const logoImgUrl = computed(() => {
   console.log("isDark:", isDark.value)
   return isDark.value ? 'src/assets/img/logo-w-sm.png' : 'src/assets/img/logo-b-sm.png'
 })
 
-const { shrink, menuCollapse } = storeToRefs(config)
 const currentRoute = reactive(router.currentRoute)
 
 // Default transition effect, slide to the left
@@ -90,51 +93,49 @@ const menuAnimationDuration = ref(0)
 // Function to toggle the menu between expanded and collapsed states
 function menuToggle() {
   menuAnimationDuration.value = '300ms'
-
   if (menuCollapse.value) {
     // console.log("Extend menu")
     if (shrink.value) {
       // Expend the shade if menu is collapsing
       showShade(() => {
         // Callback function to close the shade after the menu has collapsed
-        config.setMenuCollapse(true)
+        config.setCollapse(true)
       })
     }
+    config.setCollapse(false)
   } else {
     // If the menu is in an expanded state, close the shade
     closeShade()
+    config.setCollapse(true)
   }
-  // Toggle the menu state
-  config.setMenuCollapse(!menuCollapse.value)
+  resizeCollapse.value = collapse.value
+  console.log("collapse:", collapse.value, ", menuCollapse:", menuCollapse.value)
 }
 
+// Adaptive layout
 function onAdaptiveLayout() {
   // Get the current window width
   const clientWidth = document.body.clientWidth
-  // console.log("menuCollapse:", menuCollapse.value, config.getMenuCollapse(), "clientWidth:", clientWidth)
   // Determine if the aside menu should be shrunk based on the window width
   if (clientWidth < 800) {
     config.setShrink(true)
-    if (!menuCollapse.value) {
-      // Collapse the menu if it is not already collapsed
-      menuToggle()
-    }
+    config.setResizeCollapse(true)
   } else {
     config.setShrink(false)
+    config.setResizeCollapse(false)
   }
+  closeShade()
 }
+
+watch(() => router.currentRoute.value, (newValue, oldValue) => {
+  // Toggle the menu when the route changes
+  menuToggle()
+})
+
 
 onBeforeMount(() => {
   onAdaptiveLayout()
   useEventListener(window, 'resize', onAdaptiveLayout)
-})
-
-watch(() => router.currentRoute.value.path, (newValue, oldValue) => {
-  // If the layout is shrunk and the menu is expanded, collapse the menu
-  if (shrink.value && !menuCollapse.value) {
-    menuToggle()
-  }
-
 })
 
 function refresh() {
@@ -165,6 +166,7 @@ header {
 
 aside {
   background-color: var(--el-fg-color);
+  z-index: 9999999;
 }
 
 aside.shrink {

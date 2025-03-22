@@ -1603,6 +1603,14 @@ div.el-divider {
   padding-left: 10px !important;
 }
 
+.pl-12 {
+  padding-left: 12px !important;
+}
+
+.pl-14 {
+  padding-left: 14px !important;
+}
+
 .pl-16 {
   padding-left: 16px !important;
 }

@@ -201,7 +201,7 @@ function saveFile(filePath, content) {
  */
 async function readTomlNode(filePath, nodeName) {
   const fileContent = await readAll(filePath)
-  console.log("Read Toml file, filePath:", filePath, ", fileContent:", fileContent)
+  // console.log("Read Toml file, filePath:", filePath, ", fileContent:", fileContent)
   if (utils.isBlank(fileContent)) {
     utils.pop(t('readTomlFailed'))
     return
@@ -214,7 +214,7 @@ async function readTomlNode(filePath, nodeName) {
   })
   const node = {}
   for (let i = nodeStart + 1; i < lines.length; i++) {
-    console.log("line: ", lines[i])
+    // console.log("line: ", lines[i])
     // Determine whether the next configuration module has been reached.
     if (lines[i].startsWith("[")) {
       break
@@ -244,7 +244,7 @@ async function readTomlNode(filePath, nodeName) {
  */
 async function saveTomlNode(filePath, nodeName, newNodeJson) {
   const fileContent = await readAll(filePath)
-  console.log("Read Toml file, filePath:", filePath, ", fileContent:", fileContent)
+  // console.log("Read Toml file, filePath:", filePath, ", fileContent:", fileContent)
   if (utils.isBlank(fileContent)) {
     utils.pop(t('readTomlFailed'))
     return
@@ -257,7 +257,7 @@ async function saveTomlNode(filePath, nodeName, newNodeJson) {
   })
 
   for (let i = nodeStart + 1; i < lines.length; i++) {
-    console.log("line: ", lines[i])
+    // console.log("line: ", lines[i])
     // Determine whether the next configuration module has been reached.
     if (lines[i].startsWith("[")) {
       break

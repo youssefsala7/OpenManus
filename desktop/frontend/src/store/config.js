@@ -4,12 +4,14 @@ export const useConfig = defineStore("config", {
   state: () => {
     return {
       // 全局
-      // aside是否收缩
-      shrink: false,
       isDark: false,
       // 侧边栏
+      // aside是否收缩
+      shrink: false,
       // 菜单是否折叠
-      menuCollapse: false,
+      collapse: false,
+      // Resize Collapse
+      resizeCollapse: false,
       selectedModel: null,
       selectedLang: { code: 'en', name: 'English' },
       langList: [{ code: 'en', name: 'English' }, { code: 'zhCn', name: '简体中文' }],
@@ -31,12 +33,20 @@ export const useConfig = defineStore("config", {
       return this.isDark
     },
 
-    getMenuCollapse() {
-      return this.menuCollapse
+    getCollapse() {
+      return this.collapse
     },
 
-    setMenuCollapse(menuCollapse) {
-      this.menuCollapse = menuCollapse
+    setCollapse(collapse) {
+      this.collapse = collapse
+    },
+
+    getResizeCollapse() {
+      return this.resizeCollapse
+    },
+
+    setResizeCollapse(resizeCollapse) {
+      this.resizeCollapse = resizeCollapse
     },
 
     getSelectedModel() {

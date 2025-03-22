@@ -248,6 +248,7 @@ const buildStepList = (steps) => {
 onMounted(() => {
   // 读取配置文件config/config.toml
   loadServerConfig()
+  startNewTask()
 })
 
 function loadServerConfig() {
@@ -276,7 +277,7 @@ function handleInputEnter(event) {
 }
 
 function uploadFile() {
-  utils.pop("暂不支持,开发中", "warning")
+  utils.pop(t('inDevelopment'), "warning")
 }
 
 const scrollToBottom = () => {

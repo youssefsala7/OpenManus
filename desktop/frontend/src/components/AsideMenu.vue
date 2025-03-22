@@ -32,8 +32,8 @@
 </template>
 
 <script setup>
-import { ChatDotRound, List, Clock, Setting } from '@element-plus/icons-vue'
-import { ref, inject, onMounted, reactive, watch } from 'vue'
+import { List, Clock, Setting } from '@element-plus/icons-vue'
+import { ref, computed, inject, onMounted, watch } from 'vue'
 import { useRouter } from 'vue-router'
 import { useConfig } from '@/store/config'
 import { storeToRefs } from 'pinia'
@@ -43,7 +43,10 @@ const utils = inject('utils')
 const { t } = useI18n()
 const router = useRouter()
 const config = useConfig()
-const { menuCollapse } = storeToRefs(config)
+
+const { collapse, resizeCollapse } = storeToRefs(config)
+
+const menuCollapse = computed(() => collapse.value || resizeCollapse.value)
 
 const handleOpen = (key, keyPath) => {
   // console.log(key, keyPath)
@@ -254,8 +257,6 @@ function getMenuNameByCode(code) {
   }
   return t(code)
 }
-
-
 
 </script>
 
