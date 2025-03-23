@@ -50,4 +50,7 @@ export default {
   baseConfig: "基础设置",
   serverConfig: "服务器配置",
   inDevelopment: "功能开发中,暂不支持",
+  expandAll: "展开所有",
+  collapseAll: "收起所有",
+  generatedContent: "生成内容",
 }

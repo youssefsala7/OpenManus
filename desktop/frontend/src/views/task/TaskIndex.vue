@@ -1,7 +1,7 @@
 <template>
   <div class="main-content fc">
     <el-scrollbar ref="scrollRef">
-      <div class="output-area" v-show="taskInfo.taskId != null">
+      <div class="dialog-area" v-show="taskInfo.taskId != null">
 
         <div class="dialog-user">
           <div class="blank"></div>
@@ -19,94 +19,93 @@
         </div>
 
         <div class="dialog-ai">
-          <el-text class="title"> OpenManus-AI </el-text>
-
+          <div class="fxsb">
+            <el-text class="title"> OpenManus-AI </el-text>
+            <div class="plr-10">
+              <el-link type="primary" class="no-select plr-6" @click="expandAll" v-show="notAllExpanded">
+                {{ t('expandAll') }}
+              </el-link>
+              <el-link type="primary" class="no-select plr-6" @click="collapseAll" v-show="notAllCollapsed">
+                {{ t('collapseAll') }}
+              </el-link>
+            </div>
+          </div>
           <div class="card-row-wrap">
             <div class="card-row-aline">
-              <el-timeline class="wp-100">
-                <el-timeline-item v-for="(step, index) in taskInfo.stepList" :key="index" :timestamp="step.createdDt"
-                  placement="top">
-                  <el-card>
-                    <div>
-                      <h4 class="color-label mr-10" :class="utils.colorByLabel('step')">
-                        {{ t('step') }}
-                      </h4>
-                      <el-text>{{ step.result }}</el-text>
-                    </div>
-                    <el-divider />
-                    <div v-for="(subStep, subIndex) in step.subList">
-                      <div class="fxsb mtb-10">
-                        <el-text> {{ subStep.type }} </el-text>
-                        <el-text class="sub-step-time"> {{ subStep.createdDt }} </el-text>
-                      </div>
+              <el-collapse v-model="activeNames" @change="handleChange" class="wp-100">
+                <el-collapse-item v-for="(step, index) in taskInfo.stepList" :key="index" :name="step.stepNo"
+                  :icon="ArrowRight">
+                  <template #title>
+                    <div class="fxsb wp-100">
                       <div>
-                        <el-text> {{ subStep.result }} </el-text>
+                        <el-text class="collapse-color-label mr-10" :class="utils.colorByLabel('step')">
+                          {{ t('step') }}
+                        </el-text>
+                        <el-text class="pl-10">{{ step.result }}</el-text>
                       </div>
-                      <el-divider v-if="subIndex != step.subList.length - 1" />
+                      <el-text class="tips-text plr-10">{{ step.createdDt }}</el-text>
                     </div>
-                  </el-card>
-                </el-timeline-item>
-              </el-timeline>
+                  </template>
+                  <div v-for="(subStep, subIndex) in step.subList">
+                    <div class="fxsb mtb-10">
+                      <el-text> {{ subStep.type }} </el-text>
+                      <el-text class="sub-step-time"> {{ subStep.createdDt }} </el-text>
+                    </div>
+                    <div>
+                      <el-text> {{ subStep.result }} </el-text>
+                    </div>
+                    <el-divider v-if="subIndex != step.subList.length - 1" />
+                  </div>
+                </el-collapse-item>
+              </el-collapse>
             </div>
-            <div class="card-row-aline wp-100">
-              <div class="progress-area">
-                <div class="fc">
-                  <el-progress type="dashboard" :percentage="progress.percentage" :status="progress.status" :stroke-width="8" width="80">
-                    <template #default="{ percentage }">
-                      <span class="percentage-value">{{ percentage }}%</span>
-                    </template>
-                  </el-progress>
-                  <el-text class="mt--16">{{ taskInfo.status }}</el-text>
-                </div>
-              </div>
-              <div class="output fxc">
-                <div class="output-label">output</div>
-                <div class="output-folder">Generated Files...</div>
-              </div>
-            </div>
+
           </div>
         </div>
       </div>
     </el-scrollbar>
 
-    <div class="input-area">
-
-      <!-- <div class="input-tools">
-        <div class="new-task" v-show="!newTaskFlag">
-          <el-button round @click="startNewTask">
-            <el-icon :size="16">
-              <CirclePlus />
-            </el-icon>
-            <span> {{ t('newTask') }} </span>
-          </el-button>
+    <div class="ctrl-area">
+      <div class="task-area wp-100" v-show="!newTaskFlag">
+        <div class="progress-area">
+          <div class="fyc">
+            <el-progress type="dashboard" :percentage="taskInfo.percentage" :status="taskInfo.progressStatus"
+              :stroke-width="6" :width="60">
+              <template #default="{ percentage }">
+                <span class="percentage-value">{{ percentage }}%</span>
+              </template>
+            </el-progress>
+            <el-text class="mt--10">{{ taskInfo.status }}</el-text>
+          </div>
         </div>
-
-        <div class="task-status" v-show="taskInfo.taskId != null">
-          <el-text class="pr-10">{{ t('taskStatus.name') }}:</el-text>
-          <el-text>{{ taskInfo.status }}</el-text>
+        <div class="generated fxc">
+          <div class="generated-label">{{ t('generatedContent') }}</div>
+          <div class="generated-folder">You Can Check Generated Files Here, This Function Is In Developing.</div>
         </div>
-      </div> -->
-
-      <div class="input-box">
-        <el-icon @click="uploadFile" class="add-file-area" :size="24">
-          <FolderAdd />
-        </el-icon>
-        <el-input ref="promptEle" type="textarea" v-model="prompt" class="input-style" style="border: none;"
-          :autosize="{ minRows: 1, maxRows: 4 }" autofocus :placeholder="t('promptInputPlaceHolder')"
-          @keydown.enter="handleInputEnter" />
-
-        <el-link class="send-area">
-          <el-icon @click="sendPrompt" :size="24" v-show="!loading && taskInfo.status != 'running'">
-            <Promotion />
-          </el-icon>
-          <el-icon @click="stop" :size="24" v-show="loading || taskInfo.status == 'running'">
-            <CircleClose />
-          </el-icon>
-        </el-link>
       </div>
 
-      <div>
-        <el-text class="tips">{{ t('openManusAgiTips') }}</el-text>
+      <div class="input-area">
+        <div class="input-box">
+          <el-icon @click="uploadFile" class="add-file-area" :size="24">
+            <FolderAdd />
+          </el-icon>
+          <el-input ref="promptEle" type="textarea" v-model="prompt" class="input-style" style="border: none;"
+            :autosize="{ minRows: 1, maxRows: 4 }" autofocus :placeholder="t('promptInputPlaceHolder')"
+            @keydown.enter="handleInputEnter" />
+
+          <el-link class="send-area">
+            <el-icon @click="sendPrompt" :size="24" v-show="!loading && taskInfo.status != 'running'">
+              <Promotion />
+            </el-icon>
+            <el-icon @click="stop" :size="24" v-show="loading || taskInfo.status == 'running'">
+              <CircleClose />
+            </el-icon>
+          </el-link>
+        </div>
+      </div>
+
+      <div class="tips">
+        <el-text class="tips-text">{{ t('openManusAgiTips') }}</el-text>
       </div>
     </div>
   </div>
@@ -115,7 +114,7 @@
 
 <script setup>
 import { ref, reactive, inject, computed, onMounted, onUnmounted } from 'vue'
-import { FolderAdd, Promotion, CirclePlus, CircleClose } from '@element-plus/icons-vue'
+import { FolderAdd, Promotion, CircleClose, ArrowRight } from '@element-plus/icons-vue'
 import { useConfig } from '@/store/config'
 import { useI18n } from 'vue-i18n'
 
@@ -139,11 +138,6 @@ const taskInfo = computed(() => {
   return config.getCurrTask()
 })
 
-const progress = reactive({
-  percentage: 0,
-  status: null
-})
-
 const serverConfig = ({
   host: null,
   port: null,
@@ -151,6 +145,51 @@ const serverConfig = ({
 
 const loading = ref(false)
 const scrollRef = ref(null)
+
+const activeNames = ref([])
+
+const notAllExpanded = computed(() => {
+  return activeNames.value.length != taskInfo.value.stepList.length
+})
+
+const notAllCollapsed = computed(() => {
+  return activeNames.value.length != 0
+})
+
+const handleChange = (val) => {
+  console.log("handleChange:", val)
+}
+// Expand task log when first loading and auto collapse after 10s.
+function autoExpandCollapse(stepNo) {
+  if (activeNames.value.includes(stepNo)) {
+    return
+  }
+  console.log("autoExpandCollapse:", stepNo)
+  setTimeout(() => {
+    activeNames.value.push(stepNo)
+  }, 300)
+  setTimeout(() => {
+    const index = activeNames.value.indexOf(stepNo);
+    if (index > -1) {
+      activeNames.value.splice(index, 1);
+    }
+  }, 10000)
+}
+
+// Expand/Collapse all
+function expandAll() {
+  taskInfo.value.stepList.filter(item => {
+    if (activeNames.value.includes(item.stepNo)) {
+      return
+    }
+    activeNames.value.push(item.stepNo)
+  })
+}
+
+// Expand/Collapse all
+function collapseAll() {
+  utils.clearArray(activeNames.value)
+}
 
 // 建立EventSource连接
 const buildEventSource = (taskId) => {
@@ -171,6 +210,7 @@ const buildEventSource = (taskId) => {
     loading.value = false
     eventSource.value.close()
     taskInfo.value.status = "failed"
+    taskInfo.value.progressStatus = "exception"
     utils.pop("任务执行失败", "error")
   }
 
@@ -190,6 +230,7 @@ const handleEvent = (event, type) => {
       loading.value = false
       eventSource.value.close()
       taskInfo.value.status = "success"
+      taskInfo.value.progressStatus = "success"
       utils.pop("任务已完成", "success")
       return
     }
@@ -232,8 +273,9 @@ const buildStepList = (steps) => {
           subList: [],
           createdDt: utils.dateFormat(new Date())
         }
+        autoExpandCollapse(stepNo)
         taskInfo.value.stepList.push(parentStep)
-        progress.percentage = Math.floor((stepNo / stepCount) * 100)
+        taskInfo.value.percentage = Math.floor((stepNo / stepCount) * 100)
         return
       }
     } else {
@@ -365,6 +407,7 @@ function stop() {
   }
 
   taskInfo.value.status = "terminated"
+  taskInfo.value.progressStatus = "exception"
   utils.pop("用户终止任务", "error")
 }
 
@@ -376,6 +419,7 @@ function startNewTask() {
   }
   newTaskFlag.value = true
   prompt.value = ''
+  utils.clearArray(activeNames.value)
 }
 
 
@@ -405,7 +449,7 @@ const remoteBaseUrl = computed(() => {
 </script>
 
 <style scoped>
-.output-area {
+.dialog-area {
   flex-grow: 1;
 }
 
@@ -463,12 +507,10 @@ const remoteBaseUrl = computed(() => {
   font-size: 15px;
 }
 
-.input-area {
+.ctrl-area {
   flex-grow: 0;
   width: 100%;
   max-height: 200px;
-  padding-left: 80px;
-  padding-right: 80px;
   padding-top: 12px;
   display: flex;
   flex-direction: column;
@@ -476,22 +518,57 @@ const remoteBaseUrl = computed(() => {
   align-items: center;
 }
 
-.input-area .input-tools {
+.ctrl-area .task-area {
   width: 100%;
-  padding-bottom: 10px;
+  padding-left: 10px;
+  padding-right: 16px;
+  margin-bottom: 12px;
+  background-color: var(--el-fg-color);
+  border-radius: 12px;
   display: flex;
   justify-content: space-between;
   align-items: center;
 }
 
-.input-area .input-tools .new-task {
-  position: relative;
-  left: -80px;
+.percentage-value {
+  display: block;
+  font-size: 16px;
 }
 
-.input-area .input-tools .task-status {
-  position: relative;
-  right: -80px;
+.progress-area {
+  flex-grow: 0;
+  margin-top: 6px;
+  min-width: 76px;
+}
+
+.generated {
+  flex-grow: 1;
+  width: 100%;
+  height: 68px;
+  padding-left: 16px;
+}
+
+.generated-label {
+  width: 80px;
+  text-align: right;
+}
+
+.generated-folder {
+  width: 100%;
+  min-height: 54px;
+  margin-left: 16px;
+  background-color: var(--el-bg-color);
+  border-radius: 6px;
+}
+
+.input-area {
+  width: 100%;
+  padding-left: 80px;
+  padding-right: 80px;
+  border-radius: 16px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .input-box {
@@ -527,9 +604,12 @@ const remoteBaseUrl = computed(() => {
 }
 
 .tips {
+  padding-top: 8px;
+}
+
+.tips-text {
   color: var(--el-text-color-secondary);
   font-size: 12px;
-  padding-top: 12px;
 }
 
 .sub-step-time {
@@ -537,30 +617,18 @@ const remoteBaseUrl = computed(() => {
   font-size: 12px;
 }
 
-.percentage-value {
-  display: block;
-  font-size: 18px;
+.icon-ele {
+  margin: 0 8px 0 auto;
+  color: #409eff;
 }
 
-.progress-area {
-  flex-grow: 0;
-}
-
-.output {
-  flex-grow: 1;
-  width: 100%;
-  padding-left: 16px;
-}
-
-.output-label {
-  writing-mode: vertical-lr;
-}
-
-.output-folder {
-  width: 100%;
-  min-height: 60px;
-  margin-left: 16px;
-  background-color: var(--el-bg-color);
+.collapse-color-label {
+  margin-top: 10px;
+  margin-bottom: 10px;
+  padding-left: 10px;
+  padding-right: 10px;
+  height: 24px;
+  line-height: 24px;
   border-radius: 6px;
 }
 </style>

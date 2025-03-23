@@ -51,4 +51,8 @@ export default {
   baseConfig: "Base Settings",
   serverConfig: "Server Config",
   inDevelopment: "In development, not currently supported.",
+  expandAll: "Expand All",
+  collapseAll: "Collapse All",
+  generatedContent: "Generated Content",
+
 }

@@ -1,0 +1,1 @@
+Sum of the first 100 natural numbers: 5050
