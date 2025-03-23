@@ -1,6 +1,6 @@
 <template>
   <el-menu class="el-menu-custom" :default-active="activeMenu()" :collapse="menuCollapse" @open="handleOpen"
-    @close="handleClose">
+    @close="handleClose" :popper-offset="8">
 
     <el-menu-item index="M02" @click="routeTo('/task')">
       <el-icon>

@@ -149,7 +149,7 @@ const scrollRef = ref(null)
 const activeNames = ref([])
 
 const notAllExpanded = computed(() => {
-  return activeNames.value.length != taskInfo.value.stepList.length
+  return taskInfo.value.stepList != null && activeNames.value.length != taskInfo.value.stepList.length
 })
 
 const notAllCollapsed = computed(() => {
@@ -167,6 +167,7 @@ function autoExpandCollapse(stepNo) {
   console.log("autoExpandCollapse:", stepNo)
   setTimeout(() => {
     activeNames.value.push(stepNo)
+    scrollToBottom()
   }, 300)
   setTimeout(() => {
     const index = activeNames.value.indexOf(stepNo);
