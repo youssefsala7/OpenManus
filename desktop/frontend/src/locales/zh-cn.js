@@ -44,6 +44,7 @@ export default {
     running: "运行中",
     terminated: "终止",
   },
+  taskExecFailed: "任务执行失败",
   newTask: "新任务",
   readConfigSuccess: "读取配置成功",
   readTomlFailed: "读取配置失败",

@@ -164,18 +164,31 @@ function autoExpandCollapse(stepNo) {
   if (activeNames.value.includes(stepNo)) {
     return
   }
-  console.log("autoExpandCollapse:", stepNo)
-  setTimeout(() => {
-    activeNames.value.push(stepNo)
-    scrollToBottom()
-  }, 300)
-  setTimeout(() => {
-    const index = activeNames.value.indexOf(stepNo);
-    if (index > -1) {
-      activeNames.value.splice(index, 1);
-    }
-  }, 10000)
+  // console.log("autoExpandCollapse:", stepNo)
+  const hasSubStepList = taskInfo.value.stepList.some(step => {
+    console.log("stepNo:", step.stepNo, "subList:", JSON.stringify(step.subList))
+    return step.stepNo == stepNo && step.subList != null && step.subList.length > 0
+  })
+  console.log("stepNo", stepNo, "hasSubStepList:", hasSubStepList)
+  if (!hasSubStepList) {
+    return
+  }
+  activeNames.value.push(stepNo)
+  scrollToBottom()
+  // auto collapse after 10s.
+  collapseDelay(stepNo)
 }
+
+const collapseDelay = utils.debounce((stepNo) => {
+  if (!activeNames.value.includes(stepNo)) {
+    return
+  }
+  console.log("collapse:", stepNo)
+  const index = activeNames.value.indexOf(stepNo)
+  if (index > -1) {
+    activeNames.value.splice(index, 1)
+  }
+}, 10000)
 
 // Expand/Collapse all
 function expandAll() {
@@ -212,22 +225,22 @@ const buildEventSource = (taskId) => {
     eventSource.value.close()
     taskInfo.value.status = "failed"
     taskInfo.value.progressStatus = "exception"
-    utils.pop("任务执行失败", "error")
+    utils.pop(t('taskExecFailed'), "error")
   }
 
 }
 
 const handleEvent = (event, type) => {
   // console.log('Received event, type:', type, event.data)
-  //  clearInterval(heartbeatTimer);
+  //  clearInterval(heartbeatTimer)
   try {
-    const data = JSON.parse(event.data);
+    const data = JSON.parse(event.data)
     // console.log("type:", type, "data:", data)
     if (eventSource.value.readyState === EventSource.CLOSED) {
-      // console.log('Connection is closed');
+      // console.log('Connection is closed')
     }
     if (type == "complete" || data.status == "completed") {
-      // console.log('task completed');
+      // console.log('task completed')
       loading.value = false
       eventSource.value.close()
       taskInfo.value.status = "success"
@@ -235,10 +248,10 @@ const handleEvent = (event, type) => {
       utils.pop("任务已完成", "success")
       return
     }
-    // autoScroll(stepContainer);
+    // autoScroll(stepContainer)
     buildOutput(taskInfo.value.taskId)
   } catch (e) {
-    console.error(`Error handling ${type} event:`, e);
+    console.error(`Error handling ${type} event:`, e)
   }
 }
 
@@ -274,7 +287,6 @@ const buildStepList = (steps) => {
           subList: [],
           createdDt: utils.dateFormat(new Date())
         }
-        autoExpandCollapse(stepNo)
         taskInfo.value.stepList.push(parentStep)
         taskInfo.value.percentage = Math.floor((stepNo / stepCount) * 100)
         return
@@ -306,6 +318,7 @@ const buildStepList = (steps) => {
         parentStep.subList.push(subStep)
         return
       }
+      autoExpandCollapse(taskInfo.value.stepList[taskInfo.value.stepList.length - 1].stepNo)
     }
   })
 

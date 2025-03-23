@@ -45,6 +45,7 @@ export default {
     running: "Running",
     terminated: "Terminated",
   },
+  taskExecFailed: "Task execution failed",
   newTask: "New Task",
   readConfigSuccess: "Read config success",
   readTomlFailed: "Read config failed",
