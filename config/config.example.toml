@@ -79,6 +79,14 @@ temperature = 0.0                           # Controls randomness for vision mod
 #retry_delay = 60
 # Maximum number of times to retry all engines when all fail. Default is 3.
 #max_retries = 3
+# API key for the search engine's official API (currently used for Google)
+# For Google, create an API key at https://console.cloud.google.com/apis/credentials
+#api_key = ""
+# Custom Search Engine ID for search APIs that require it (currently used for Google)
+# For Google, create a Custom Search Engine at https://programmablesearchengine.google.com/
+#cx = ""
+# Whether to fall back to web scraping when the API fails or is not configured. Default is true.
+#use_fallback = true
 
 
 ## Sandbox configuration

@@ -49,6 +49,18 @@ class SearchSettings(BaseModel):
         default=3,
         description="Maximum number of times to retry all engines when all fail",
     )
+    api_key: Optional[str] = Field(
+        None,
+        description="API key for the search engine's official API (currently used for Google)",
+    )
+    cx: Optional[str] = Field(
+        None,
+        description="Custom Search Engine ID for search APIs that require it (currently used for Google)",
+    )
+    use_fallback: bool = Field(
+        True,
+        description="Whether to fall back to web scraping when the API fails or is not configured",
+    )
 
 
 class BrowserSettings(BaseModel):
