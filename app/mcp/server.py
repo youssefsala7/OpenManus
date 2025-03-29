@@ -29,8 +29,7 @@ from app.tool.base import BaseTool
 from app.tool.bash import Bash
 from app.tool.browser_use_tool import BrowserUseTool
 from app.tool.str_replace_editor import StrReplaceEditor
-from app.tool.valiterminate import Terminate
-
+from app.tool.terminate import Terminate
 
 class MCPServer:
     """MCP Server implementation with tool registration and management."""
