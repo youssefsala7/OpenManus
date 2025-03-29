@@ -182,8 +182,6 @@ class ToolCallAgent(ReActAgent):
                 args['request'] = self.memory.get_index_messages(0)
                 args['content'] = str(self.memory)
 
-                # print(self.memory.get_index_messages(-2))
-                # exit()
                 result = await self.available_tools.execute(name=name, tool_input=args)
             else:
                 result = await self.available_tools.execute(name=name, tool_input=args)
