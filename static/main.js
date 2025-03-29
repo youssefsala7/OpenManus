@@ -9,20 +9,16 @@ function checkConfigStatus() {
         const inputContainer = document.getElementById('input-container');
         if (data.status === 'missing') {
             showConfigModal(data.example_config);
-            // 禁用输入区域
             inputContainer.classList.add('disabled');
         } else if (data.status === 'no_example') {
             alert('Error: Missing configuration example file! Please ensure that the config/config.example.toml file exists.');
-            // 禁用输入区域
             inputContainer.classList.add('disabled');
         } else {
-            // 启用输入区域
             inputContainer.classList.remove('disabled');
         }
     })
     .catch(error => {
         console.error('Configuration check failed:', error);
-        // 发生错误时禁用输入区域
         document.getElementById('input-container').classList.add('disabled');
     });
 }
@@ -38,15 +34,12 @@ function showConfigModal(config) {
         fillConfigForm(config);
     }
 
-    // 添加关闭按钮事件监听
     const closeBtn = configModal.querySelector('.close-modal');
     const cancelBtn = document.getElementById('cancel-config-btn');
 
     function closeConfigModal() {
         configModal.classList.remove('active');
-        // 清除错误信息
         document.getElementById('config-error').textContent = '';
-        // 移除所有输入框的错误状态
         document.querySelectorAll('.form-group.error').forEach(group => {
             group.classList.remove('error');
         });
@@ -140,7 +133,6 @@ function saveConfig() {
     .then(data => {
         if (data.status === 'success') {
             document.getElementById('config-modal').classList.remove('active');
-            // 启用输入区域
             document.getElementById('input-container').classList.remove('disabled');
             alert('Configuration saved successfully! The application will use the new configuration on next startup.');
             window.location.reload();
@@ -682,7 +674,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
     loadHistory();
 
-    // 添加配置按钮点击事件
     const configButton = document.getElementById('config-button');
     if (configButton) {
         configButton.addEventListener('click', () => {
@@ -748,7 +739,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 pythonModal.classList.remove('active');
             }
 
-            // 不要关闭配置弹窗，因为配置是必需的
             const configModal = document.getElementById('config-modal');
             if (configModal && configModal.classList.contains('active') && !isConfigRequired()) {
                 configModal.classList.remove('active');
@@ -757,8 +747,6 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 });
 
-// 修改isConfigRequired函数
 function isConfigRequired() {
-    // 现在配置不再是必需的，因为这是用户主动点击修改配置
     return false;
 }

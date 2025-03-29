@@ -47,7 +47,7 @@ body {
     display: flex;
     flex-direction: column;
     gap: 20px;
-    min-height: calc(100vh - 40px);  /* 减去container的padding */
+    min-height: calc(100vh - 40px);
 }
 
 .history-panel {
