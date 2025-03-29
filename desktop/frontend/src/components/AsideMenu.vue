@@ -82,11 +82,6 @@ const menuList = [
         menuName: "menu.config.llm",
         href: "/config/llm"
       },
-      {
-        index: "M9903",
-        menuName: "menu.config.theme",
-        href: "/config/theme"
-      }
     ]
   },
 ]
