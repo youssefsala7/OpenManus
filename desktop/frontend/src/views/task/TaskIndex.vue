@@ -1,6 +1,6 @@
 <template>
   <div class="main-content fc">
-    <el-scrollbar ref="scrollRef">
+    <el-scrollbar ref="scrollRef" class="scrollWrap">
       <div class="dialog-area" v-show="taskInfo.taskId != null">
 
         <div class="dialog-user">
@@ -67,17 +67,6 @@
 
     <div class="ctrl-area">
       <div class="task-area wp-100" v-show="!newTaskFlag">
-        <div class="progress-area">
-          <div class="fyc">
-            <el-progress type="dashboard" :percentage="taskInfo.percentage" :status="taskInfo.progressStatus"
-              :stroke-width="6" :width="60">
-              <template #default="{ percentage }">
-                <span class="percentage-value">{{ percentage }}%</span>
-              </template>
-            </el-progress>
-            <el-text class="mt--10">{{ taskInfo.status }}</el-text>
-          </div>
-        </div>
         <div class="generated fxc">
           <div class="generated-label">{{ t('generatedContent') }}</div>
           <div class="generated-folder">You Can Check Generated Files Here, This Function Is In Developing.</div>
@@ -85,6 +74,19 @@
       </div>
 
       <div class="input-area">
+        <div class="progress-area w-80">
+          <!-- progress-wrap是flex-column布局,器元素高度不会撑开父元素高度 -->
+          <div class="progress-wrap">
+            <el-progress type="dashboard" class="mt-10" :percentage="taskInfo.percentage"
+              :status="taskInfo.progressStatus" :stroke-width="6" :width="60" v-show="taskInfo.status != null">
+              <template #default="{ percentage }">
+                <span class="percentage-value">{{ percentage }}%</span>
+              </template>
+            </el-progress>
+            <el-text class="progress-text">{{ taskInfo.status }}</el-text>
+          </div>
+        </div>
+
         <div class="input-box">
           <el-icon @click="uploadFile" class="add-file-area" :size="24">
             <FolderAdd />
@@ -113,7 +115,7 @@
 </template>
 
 <script setup>
-import { ref, reactive, inject, computed, onMounted, onUnmounted } from 'vue'
+import { ref, reactive, watch, inject, computed, onMounted, onUnmounted } from 'vue'
 import { FolderAdd, Promotion, CircleClose, ArrowRight } from '@element-plus/icons-vue'
 import { useConfig } from '@/store/config'
 import { useI18n } from 'vue-i18n'
@@ -161,12 +163,13 @@ const handleChange = (val) => {
 }
 // Expand task log when first loading and auto collapse after 10s.
 function autoExpandCollapse(stepNo) {
+  scrollToBottom()
   if (activeNames.value.includes(stepNo)) {
     return
   }
   // console.log("autoExpandCollapse:", stepNo)
   const hasSubStepList = taskInfo.value.stepList.some(step => {
-    console.log("stepNo:", step.stepNo, "subList:", JSON.stringify(step.subList))
+    // console.log("stepNo:", step.stepNo, "subList:", JSON.stringify(step.subList))
     return step.stepNo == stepNo && step.subList != null && step.subList.length > 0
   })
   console.log("stepNo", stepNo, "hasSubStepList:", hasSubStepList)
@@ -174,21 +177,10 @@ function autoExpandCollapse(stepNo) {
     return
   }
   activeNames.value.push(stepNo)
-  scrollToBottom()
-  // auto collapse after 10s.
-  collapseDelay(stepNo)
+  setTimeout(() => {
+    scrollToBottom()
+  }, 500)
 }
-
-const collapseDelay = utils.debounce((stepNo) => {
-  if (!activeNames.value.includes(stepNo)) {
-    return
-  }
-  console.log("collapse:", stepNo)
-  const index = activeNames.value.indexOf(stepNo)
-  if (index > -1) {
-    activeNames.value.splice(index, 1)
-  }
-}, 10000)
 
 // Expand/Collapse all
 function expandAll() {
@@ -197,10 +189,17 @@ function expandAll() {
       return
     }
     activeNames.value.push(item.stepNo)
+    setTimeout(() => {
+      scrollToBottom()
+    }, 500)
   })
 }
 
-// Expand/Collapse all
+watch(activeNames.value, (newVal, oldVal) => {
+  console.log("activeNames changed:", newVal, oldVal)
+})
+
+
 function collapseAll() {
   utils.clearArray(activeNames.value)
 }
@@ -210,23 +209,23 @@ const buildEventSource = (taskId) => {
   loading.value = true
   eventSource.value = new EventSource(remoteBaseUrl.value + '/tasks/' + taskId + '/events')
   eventSource.value.onmessage = (event) => {
-    // console.log('Received data:', event.data)
-    // 在这里处理接收到的数据 不起作用
+    console.log('Received data:', event.data)
+    // 在这里处理接收到的数据 不起作用 可能是服务端接口有问题
   }
 
   eventTypes.forEach(type => {
     eventSource.value.addEventListener(type, (event) => handleEvent(event, type))
   })
 
-  eventSource.value.onerror = (error) => {
-    console.error('EventSource failed:', error)
-    // 处理错误情况
-    loading.value = false
-    eventSource.value.close()
-    taskInfo.value.status = "failed"
-    taskInfo.value.progressStatus = "exception"
-    utils.pop(t('taskExecFailed'), "error")
-  }
+  /* eventSource.value.onerror = (error) => {
+     console.error('EventSource failed:', error)
+     // 处理错误情况 可能是服务端接口有问题
+     // loading.value = false
+     // eventSource.value.close()
+     // taskInfo.value.status = "failed"
+     // taskInfo.value.progressStatus = "exception"
+     // utils.pop(t('taskExecFailed'), "error")
+   } */
 
 }
 
@@ -242,7 +241,6 @@ const handleEvent = (event, type) => {
     if (type == "complete" || data.status == "completed") {
       // console.log('task completed')
       loading.value = false
-      eventSource.value.close()
       taskInfo.value.status = "success"
       taskInfo.value.progressStatus = "success"
       utils.pop("任务已完成", "success")
@@ -261,10 +259,6 @@ async function buildOutput(taskId) {
     // console.log("task info resp:", data)
     buildStepList(data.steps)
     // console.log("stepList:", taskInfo.value.stepList)
-    // 滚动到底部
-    setTimeout(() => {
-      scrollToBottom()
-    }, 100)
   })
 }
 
@@ -291,6 +285,7 @@ const buildStepList = (steps) => {
         taskInfo.value.percentage = Math.floor((stepNo / stepCount) * 100)
         return
       }
+      scrollToBottom()
     } else {
       // 子步骤
       const subStep = {
@@ -316,17 +311,20 @@ const buildStepList = (steps) => {
       if (!existSubStep) {
         // 不存在时, 添加到末尾
         parentStep.subList.push(subStep)
-        return
       }
       autoExpandCollapse(taskInfo.value.stepList[taskInfo.value.stepList.length - 1].stepNo)
     }
+    scrollToBottom()
   })
-
+  scrollToBottom()
 }
 
 onMounted(() => {
   // 读取配置文件config/config.toml
   loadServerConfig()
+  if (taskInfo.value.status == "running") {
+    taskInfo.value.status = null
+  }
   startNewTask()
 })
 
@@ -535,7 +533,7 @@ const remoteBaseUrl = computed(() => {
 .ctrl-area .task-area {
   width: 100%;
   padding-left: 10px;
-  padding-right: 16px;
+  padding-right: 7px;
   margin-bottom: 12px;
   background-color: var(--el-fg-color);
   border-radius: 12px;
@@ -547,12 +545,6 @@ const remoteBaseUrl = computed(() => {
 .percentage-value {
   display: block;
   font-size: 16px;
-}
-
-.progress-area {
-  flex-grow: 0;
-  margin-top: 6px;
-  min-width: 76px;
 }
 
 .generated {
@@ -577,15 +569,39 @@ const remoteBaseUrl = computed(() => {
 
 .input-area {
   width: 100%;
-  padding-left: 80px;
   padding-right: 80px;
   border-radius: 16px;
   display: flex;
   justify-content: center;
-  align-items: center;
+  align-items: end;
 }
 
+.progress-area {
+  align-self: center;
+  flex-grow: 0;
+  /* margin-left: -6px;
+  margin-right: 10px; */
+}
+
+.progress-wrap {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 80px;
+  height: 54px;
+  margin-left: -10px;
+}
+
+.progress-text {
+  margin-top: -10px;
+  width: 70px;
+  text-align: center;
+}
+
+
 .input-box {
+  flex-grow: 1;
   width: 100%;
   border-radius: 16px;
   background-color: var(--el-fg-color);

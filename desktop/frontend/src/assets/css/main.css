@@ -941,6 +941,10 @@ div.el-divider {
   margin-left: 12px !important;
 }
 
+.mt--8 {
+  margin-top: -8px !important;
+}
+
 .mt--10 {
   margin-top: -10px !important;
 }
