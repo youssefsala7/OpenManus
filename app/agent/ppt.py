@@ -1,11 +1,9 @@
 from typing import List
 
 from pydantic import Field
-from app.config import config
 from app.agent.toolcall import ToolCallAgent
 from app.prompt.validator import NEXT_STEP_PROMPT, SYSTEM_PROMPT
-from app.tool import Terminate, StrReplaceEditor, Validator, ToolCollection, LatexGenerator
-from app.config import config
+from app.tool import ValiTerminate, Validator, ToolCollection, LatexGenerator
 
 class PPTAgent(ToolCallAgent):
     """An agent that implements the validate paradigm."""
@@ -17,9 +15,9 @@ class PPTAgent(ToolCallAgent):
     next_step_prompt: str = NEXT_STEP_PROMPT
 
     available_tools: ToolCollection = ToolCollection(
-    LatexGenerator(), Validator(),  Terminate()
+    LatexGenerator(), Validator(),  ValiTerminate()
     )
-    special_tool_names: List[str] = Field(default_factory=lambda: [Terminate().name])
+    special_tool_names: List[str] = Field(default_factory=lambda: [ValiTerminate().name])
 
     max_steps: int = 30
 
