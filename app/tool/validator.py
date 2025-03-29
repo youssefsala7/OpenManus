@@ -20,16 +20,8 @@ class Validator(BaseTool):
     parameters: dict = {
         "type": "object",
         "properties": {
-            "request": {
-                "type": "string",
-                "description": " (required) The overall request of this task.",
-            },
-            # "content": {
-            #     "type": "string",
-            #     "description": "(required) content to validate",
-            # },
         },
-        "required": ["request"],
+        "required": [],
     }
 
     async def validate(self, request: str, content: str):
