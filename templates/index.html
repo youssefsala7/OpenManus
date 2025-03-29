@@ -8,11 +8,15 @@
 </head>
 <body>
     <div class="container">
-        <div class="history-panel">
-            <h2>History Tasks</h2>
-            <div id="task-list" class="task-list"></div>
+        <div class="side-panel">
+            <div class="history-panel">
+                <h2>History Tasks</h2>
+                <div id="task-list" class="task-list"></div>
+            </div>
+            <div class="set-config-panel">
+                <input type="button" id="config-button" value="Configuration Setting" title="Configuration Settings">
+            </div>
         </div>
-
         <div class="main-panel">
             <div id="task-container" class="task-container">
                 <div class="welcome-message">
@@ -39,6 +43,7 @@
             <div class="config-modal-header">
                 <h2>System Configuration</h2>
                 <p>Please fill in the necessary configuration information to continue using the system</p>
+                <span class="close-modal">&times;</span>
             </div>
 
             <div class="config-modal-body">
@@ -88,6 +93,7 @@
             <div class="config-modal-footer">
                 <p id="config-error" class="config-error"></p>
                 <div class="config-actions">
+                    <button id="cancel-config-btn" class="secondary-btn">Cancel</button>
                     <button id="save-config-btn" class="primary-btn">Save Configuration</button>
                 </div>
             </div>

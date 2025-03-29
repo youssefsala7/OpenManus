@@ -259,7 +259,12 @@ async def check_config_status():
     example_config_path = Path(__file__).parent / "config" / "config.example.toml"
 
     if config_path.exists():
-        return {"status": "exists"}
+        try:
+            with open(config_path, "rb") as f:
+                current_config = tomllib.load(f)
+            return {"status": "exists", "config": current_config}
+        except Exception as e:
+            return {"status": "error", "message": str(e)}
     elif example_config_path.exists():
         try:
             with open(example_config_path, "rb") as f:

@@ -6,28 +6,51 @@ function checkConfigStatus() {
     fetch('/config/status')
     .then(response => response.json())
     .then(data => {
+        const inputContainer = document.getElementById('input-container');
         if (data.status === 'missing') {
             showConfigModal(data.example_config);
+            inputContainer.classList.add('disabled');
         } else if (data.status === 'no_example') {
             alert('Error: Missing configuration example file! Please ensure that the config/config.example.toml file exists.');
-        } else if (data.status === 'error') {
-            alert('Configuration check error:' + data.message);
+            inputContainer.classList.add('disabled');
+        } else {
+            inputContainer.classList.remove('disabled');
         }
     })
     .catch(error => {
         console.error('Configuration check failed:', error);
+        document.getElementById('input-container').classList.add('disabled');
     });
 }
 
 // Display configuration pop-up and fill in sample configurations
-function showConfigModal(exampleConfig) {
+function showConfigModal(config) {
     const configModal = document.getElementById('config-modal');
     if (!configModal) return;
 
     configModal.classList.add('active');
 
-    if (exampleConfig) {
-        fillConfigForm(exampleConfig);
+    if (config) {
+        fillConfigForm(config);
+    }
+
+    const closeBtn = configModal.querySelector('.close-modal');
+    const cancelBtn = document.getElementById('cancel-config-btn');
+
+    function closeConfigModal() {
+        configModal.classList.remove('active');
+        document.getElementById('config-error').textContent = '';
+        document.querySelectorAll('.form-group.error').forEach(group => {
+            group.classList.remove('error');
+        });
+    }
+
+    if (closeBtn) {
+        closeBtn.onclick = closeConfigModal;
+    }
+
+    if (cancelBtn) {
+        cancelBtn.onclick = closeConfigModal;
     }
 
     const saveButton = document.getElementById('save-config-btn');
@@ -110,9 +133,8 @@ function saveConfig() {
     .then(data => {
         if (data.status === 'success') {
             document.getElementById('config-modal').classList.remove('active');
-
+            document.getElementById('input-container').classList.remove('disabled');
             alert('Configuration saved successfully! The application will use the new configuration on next startup.');
-
             window.location.reload();
         } else {
             document.getElementById('config-error').textContent =
@@ -647,10 +669,36 @@ print("Hello from Python Simulated environment!")
 }
 
 document.addEventListener('DOMContentLoaded', () => {
-    // Check configuration status
+    // Check configuration status on startup
     checkConfigStatus();
 
     loadHistory();
+
+    const configButton = document.getElementById('config-button');
+    if (configButton) {
+        configButton.addEventListener('click', () => {
+            fetch('/config/status')
+            .then(response => response.json())
+            .then(data => {
+                console.log(data);
+                if (data.status === 'exists' && data.config) {
+                    showConfigModal(data.config);
+                } else if (data.status === 'missing' && data.example_config) {
+                    showConfigModal(data.example_config);
+                } else if (data.status === 'no_example') {
+                    alert('Error: Missing configuration example file! Please ensure that the config/config.example.toml file exists.');
+                } else if (data.status === 'error') {
+                    alert('Configuration error: ' + data.message);
+                } else {
+                    alert('Unable to load configuration. Please check if config.example.toml exists.');
+                }
+            })
+            .catch(error => {
+                console.error('Failed to fetch configuration:', error);
+                alert('Failed to load configuration. Please check if the server is running and try again.');
+            });
+        });
+    }
 
     document.getElementById('prompt-input').addEventListener('keydown', (e) => {
         if (e.key === 'Enter' && !e.shiftKey) {
@@ -691,7 +739,14 @@ document.addEventListener('DOMContentLoaded', () => {
                 pythonModal.classList.remove('active');
             }
 
-            // Do not close the configuration pop-up, because the configuration is required
+            const configModal = document.getElementById('config-modal');
+            if (configModal && configModal.classList.contains('active') && !isConfigRequired()) {
+                configModal.classList.remove('active');
+            }
         }
     });
 });
+
+function isConfigRequired() {
+    return false;
+}
