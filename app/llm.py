@@ -738,7 +738,9 @@ class LLM:
             response: ChatCompletion = await self.client.chat.completions.create(
                 **params, stream=False
             )
-
+            # print(messages)
+            # print(response)
+            # exit()
             # Check if response is valid
             if not response.choices or not response.choices[0].message:
                 print(response)
