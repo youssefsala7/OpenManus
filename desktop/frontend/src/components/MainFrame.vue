@@ -4,7 +4,8 @@
       <div :class="menuCollapse ? 'fixed-menu-collapse fxc' : 'fixed-menu-expand fxsb'">
         <div v-show="!menuCollapse" class="menu-logo">
           <el-link type="primary" @click="refresh" class="pl-14 pr-4">
-            <img :src="logoImgUrl" class="fxc" height="26px" alt="logo" />
+            <img v-if="isDark" src="@/assets/img/logo-w-sm.png" class="fxc" height="26px" alt="logo" />
+            <img v-if="!isDark" src="@/assets/img/logo-b-sm.png" class="fxc" height="26px" alt="logo" />
           </el-link>
         </div>
         <el-link class="plr-10 w-56" @click="menuToggle">
@@ -69,11 +70,6 @@ const isDark = useDark()
 const { shrink, collapse, resizeCollapse } = storeToRefs(config)
 
 const menuCollapse = computed(() => collapse.value || resizeCollapse.value)
-
-const logoImgUrl = computed(() => {
-  console.log("isDark:", isDark.value)
-  return isDark.value ? 'src/assets/img/logo-w-sm.png' : 'src/assets/img/logo-b-sm.png'
-})
 
 const currentRoute = reactive(router.currentRoute)
 
