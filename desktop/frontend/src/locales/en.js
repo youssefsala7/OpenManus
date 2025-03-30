@@ -72,7 +72,7 @@ export default {
   llmConfig: "LLM Config",
   envLibExists: "Dependency Libary Exists",
   envLibNotExists: "Dependency Libary Not Exists, Please Download First.",
-  envLibDownloadTips: "The environmental dependency library is about 2GB in size, please be patient and wait for the download to complete.",
+  envLibDownloadTips: "The 2GB environmental library is downloading.",
   envLibDownloadSuccess: "Dependency Libary Download Success",
   envLibDownloadFailed: "Dependency Libary Download Failed",
   envLibDownloading: "Dependency Libary Downloading",

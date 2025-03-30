@@ -26,19 +26,15 @@
                 </el-button>
               </div>
 
-              <div class="wp-100" v-show="envLibDownloadLoading">
+              <div class="wp-100" v-show="!envLibDownloadLoading">
                 <el-progress :percentage="envLibDownloadProgress.percentage" :stroke-width="15"
                   :status="envLibDownloadProgress.status" striped
                   :striped-flow="envLibDownloadProgress.status != 'success'" :duration="10" class="mtb-10" />
                 <div class="wp-100">
-                  <div>
-                    <el-text class="download-progress-tips">{{ t('envLibDownloadTips') }}</el-text>
-                  </div>
-                  <div class="max-w-500">
-                    <el-text class="download-progress-tips" truncated>
-                      {{ envLibDownloadProgress.text }}
-                    </el-text>
-                  </div>
+                  <el-text class="download-progress-tips">{{ t('envLibDownloadTips') }}</el-text>
+                  <el-text class="download-progress-tips max-w-500" truncated>
+                    {{ envLibDownloadProgress.text }}
+                  </el-text>
                 </div>
               </div>
             </el-card>

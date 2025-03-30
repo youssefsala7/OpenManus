@@ -20,17 +20,7 @@ func ExecBatFile(ctx context.Context, batId string, batPath string) {
 		return
 	}
 
-	// 设置控制台代码页为UTF-8 (65001)
-	// 重定向输出到nul以避免干扰控制台输出
-	cmd := exec.Command("cmd", "/C", "chcp 65001 > nul")
-	// 设置cmd.SysProcAttr.HideWindow为true以隐藏cmd窗口
-	cmd.SysProcAttr = &syscall.SysProcAttr{HideWindow: true}
-	if err := cmd.Run(); err != nil {
-		runtime.EventsEmit(ctx, batId, "error", err.Error())
-		return
-	}
-
-	cmd = exec.Command("cmd", "/C", batPath)
+	cmd := exec.Command("cmd", "/C", "chcp 65001 > nul &&", batPath)
 	// 设置cmd.SysProcAttr.HideWindow为true以隐藏cmd窗口
 	cmd.SysProcAttr = &syscall.SysProcAttr{HideWindow: true}
 	cmd.Env = os.Environ()
