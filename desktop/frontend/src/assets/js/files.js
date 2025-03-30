@@ -203,7 +203,7 @@ async function readTomlNode(filePath, nodeName) {
   const fileContent = await readAll(filePath)
   // console.log("Read Toml file, filePath:", filePath, ", fileContent:", fileContent)
   if (utils.isBlank(fileContent)) {
-    utils.pop(t('readTomlFailed'))
+    utils.pop('readTomlFailed')
     return
   }
   const lines = utils.stringToLines(fileContent)

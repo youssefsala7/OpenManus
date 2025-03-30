@@ -319,7 +319,17 @@ const buildStepList = (steps) => {
   scrollToBottom()
 }
 
-onMounted(() => {
+const appDataPath = ref()
+
+onMounted(async () => {
+  await files.awaitAppPath().then((path) => {
+    appDataPath.value = path
+    console.log('appDataPath: ', appDataPath.value)
+    if (appDataPath.value && appDataPath.value.endsWith('\\desktop\\build\\bin')) {
+      appDataPath.value = appDataPath.value.replace('\\desktop\\build\\bin', '')
+    }
+    console.log('appDataPath: ', appDataPath.value)
+  })
   // 读取配置文件config/config.toml
   loadServerConfig()
   if (taskInfo.value.status == "running") {
@@ -329,7 +339,7 @@ onMounted(() => {
 })
 
 function loadServerConfig() {
-  const filePath = "@/../../config/config.toml"
+  const filePath = appDataPath.value + "\\config\\config.toml"
   files.readTomlNode(filePath, "server").then((node) => {
     console.log("config/config.toml: ", node)
     if (utils.isBlank(node)) {

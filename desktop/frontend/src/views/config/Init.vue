@@ -348,8 +348,6 @@ function venvFolderSizeCheck() {
 const appDataPath = ref()
 
 onMounted(async () => {
-  // 读取配置文件config/config.toml
-  loadConfig()
   await files.awaitAppPath().then((path) => {
     appDataPath.value = path
     console.log('appDataPath: ', appDataPath.value)
@@ -358,6 +356,8 @@ onMounted(async () => {
     }
     console.log('appDataPath: ', appDataPath.value)
   })
+  // 读取配置文件config/config.toml
+  loadConfig()
 
   // 监听后台执行bat命令事件
   EventsOn('ExecRunBat', (type, data) => {
@@ -412,7 +412,7 @@ onUnmounted(() => {
 })
 
 function loadConfig() {
-  const filePath = "@/../../config/config.toml"
+  const filePath = appDataPath.value + "\\config\\config.toml"
   files.readTomlNode(filePath, "server").then((node) => {
     console.log("config/config.toml: ", node)
     if (utils.isBlank(node)) {
@@ -441,7 +441,7 @@ function loadConfig() {
 }
 
 function saveServerConfig() {
-  const filePath = "@/../../config/config.toml"
+  const filePath = appDataPath.value + "\\config\\config.toml"
   files.readAll(filePath)
   files.saveTomlNode(filePath, "server", serverConfigUpd).then((resp) => {
     console.log("config/config.toml: ", resp)
@@ -451,7 +451,7 @@ function saveServerConfig() {
 }
 
 function saveLlmConfig() {
-  const filePath = "@/../../config/config.toml"
+  const filePath = appDataPath.value + "\\config\\config.toml"
   files.readAll(filePath)
   files.saveTomlNode(filePath, "llm", llmConfigUpd).then((resp) => {
     console.log("config/config.toml: ", resp)

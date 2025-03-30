@@ -158,13 +158,23 @@ function clearCache() {
   utils.pop(t('clearCacheSuccess'))
 }
 
-onMounted(() => {
+const appDataPath = ref()
+
+onMounted(async () => {
+  await files.awaitAppPath().then((path) => {
+    appDataPath.value = path
+    console.log('appDataPath: ', appDataPath.value)
+    if (appDataPath.value && appDataPath.value.endsWith('\\desktop\\build\\bin')) {
+      appDataPath.value = appDataPath.value.replace('\\desktop\\build\\bin', '')
+    }
+    console.log('appDataPath: ', appDataPath.value)
+  })
   // 读取配置文件config/config.toml
   loadLlmConfig()
 })
 
 function loadLlmConfig() {
-  const filePath = "@/../../config/config.toml"
+  const filePath = appDataPath.value + "\\config\\config.toml"
   files.readTomlNode(filePath, "llm").then((node) => {
     console.log("config/config.toml: ", node)
     if (utils.isBlank(node)) {
@@ -178,7 +188,7 @@ function loadLlmConfig() {
 }
 
 function saveLlmConfig() {
-  const filePath = "@/../../config/config.toml"
+  const filePath = appDataPath.value + "\\config\\config.toml"
   files.readAll(filePath)
   files.saveTomlNode(filePath, "llm", llmConfigUpd).then((resp) => {
     console.log("config/config.toml: ", resp)

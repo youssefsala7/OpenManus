@@ -37,8 +37,7 @@
 </template>
 
 <script setup>
-import { ref, reactive, inject, computed, onMounted, onUnmounted, watchEffect } from 'vue'
-import { FolderAdd, Promotion, Eleme, CircleClose } from '@element-plus/icons-vue'
+import { ref, inject, onMounted } from 'vue'
 import { useRoute, useRouter } from "vue-router"
 import { useConfig } from '@/store/config'
 import { useI18n } from 'vue-i18n'
