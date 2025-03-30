@@ -1,5 +1,8 @@
 import { createRouter, createWebHashHistory } from 'vue-router'
 
+const localConfig = localStorage.getItem('config') ? JSON.parse(localStorage.getItem('config')) : {}
+const init = localConfig.init? localConfig.init : false
+
 const router = createRouter({
   history: createWebHashHistory(),
   routes: [
@@ -10,7 +13,7 @@ const router = createRouter({
         title: "主页"
       },
       // 重定向到默认页面
-      redirect: '/home',
+      redirect: init ? '/task' : '/home',
       children: [
         {
           path: 'home',
@@ -48,6 +51,24 @@ const router = createRouter({
         },
         {
           path: 'history',
+          component: () => import('@/views/task/HistoryIndex.vue'),
+          meta: {
+            keepAlive: true,
+            title: "历史记录",
+            index: 0
+          }
+        },
+      ]
+    },
+    {
+      path: '/history',
+      component: () => import('@/components/MainFrame.vue'),
+      meta: {
+        title: "历史记录"
+      },
+      children: [
+        {
+          path: '',
           component: () => import('@/views/task/HistoryIndex.vue'),
           meta: {
             keepAlive: true,

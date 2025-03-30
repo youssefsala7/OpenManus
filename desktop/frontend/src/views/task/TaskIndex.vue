@@ -1,6 +1,6 @@
 <template>
-  <div class="main-content fc">
-    <el-scrollbar ref="scrollRef" class="scrollWrap">
+  <div class="main-content-full-height">
+    <el-scrollbar ref="scrollRef" class="scroll-wrap">
       <div class="dialog-area" v-show="taskInfo.taskId != null">
 
         <div class="dialog-user">
@@ -461,6 +461,10 @@ const remoteBaseUrl = computed(() => {
 </script>
 
 <style scoped>
+.scroll-wrap {
+  width: 100%;
+}
+
 .dialog-area {
   flex-grow: 1;
 }

@@ -1,5 +1,5 @@
 <template>
-  <div class="main-content fc">
+  <div class="main-content-full-height">
     <!-- 展示模块-暂无数据 -->
     <div class="no-data" v-show="baseNoData">{{ t('noData') }}</div>
 

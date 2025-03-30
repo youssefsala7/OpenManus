@@ -17,7 +17,8 @@ export const useConfig = defineStore("config", {
       langList: [{ code: 'en', name: 'English' }, { code: 'zhCn', name: '中文' }],
       taskHistory: [
         // taskId, prompt, stepList, status, createdDt
-      ]
+      ],
+      init: false,
     }
   },
   actions: {
@@ -90,6 +91,13 @@ export const useConfig = defineStore("config", {
       return this.taskHistory[0]
     },
 
+    getInit() {
+      return this.init
+    },
+
+    setInit(init) {
+      this.init = init
+    }
   },
   persist: {
     key: "config",

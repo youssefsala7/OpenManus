@@ -82,7 +82,7 @@ function getStarted() {
 </script>
 
 <style scoped>
-.index{
+.index {
   min-height: 540px;
   height: calc(100vh - 32px);
 }

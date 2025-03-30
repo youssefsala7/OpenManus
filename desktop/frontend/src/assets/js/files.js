@@ -1,4 +1,4 @@
-import { ReadAll, SaveFile } from '@/../wailsjs/go/main/App.js'
+import { ReadAll, SaveFile, PathExists, DirSize, AppPath } from '@/../wailsjs/go/main/App.js'
 import utils from '@/assets/js/utils'
 
 // Temporary cache for file information
@@ -284,6 +284,23 @@ async function saveTomlNode(filePath, nodeName, newNodeJson) {
   await saveFile(filePath, newContent)
 }
 
+
+function pathExists(path) {
+  return PathExists(path)
+}
+
+function dirSize(path) {
+  return DirSize(path)
+}
+
+function appPath(path) {
+  return AppPath(path)
+}
+
+async function awaitAppPath(path) {
+  return await appPath(path)
+}
+
 export default {
   // Cache on onChange
   cache,
@@ -309,4 +326,8 @@ export default {
   readTomlNode,
   // Save toml node
   saveTomlNode,
+  pathExists,
+  dirSize,
+  appPath,
+  awaitAppPath,
 }

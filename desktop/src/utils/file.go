@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"io"
 	"os"
+	"path/filepath"
 )
 
 // ReadAll file content
@@ -48,4 +49,40 @@ func SaveFile(filePath string, data string) {
 		return
 	}
 	return
+}
+
+func PathExists(path string) (bool, error) {
+	_, err := os.Stat(path)
+	// 文件或目录已经存在
+	if err == nil {
+		return true, nil
+	}
+	if os.IsNotExist(err) {
+		return false, nil
+	}
+	return false, err
+}
+
+func DirSize(path string) (int64, error) {
+	var size int64
+	err := filepath.Walk(path, func(_ string, info os.FileInfo, err error) error {
+		if err != nil {
+			return err
+		}
+		if !info.IsDir() {
+			size += info.Size()
+		}
+		return nil
+	})
+	return size, err
+}
+
+func AppPath() string {
+	exePath, err := os.Executable()
+	if err != nil {
+		panic(err)
+	}
+	appDir := filepath.Dir(exePath)
+	fmt.Println("Application Directory:", appDir)
+	return appDir
 }

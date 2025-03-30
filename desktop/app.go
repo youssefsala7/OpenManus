@@ -53,6 +53,19 @@ func (a *App) startup(ctx context.Context) {
 		}
 	})
 
+	// 注册执行py脚本监听器
+	runtime.EventsOn(ctx, "pyFile", func(data ...interface{}) {
+		if len(data) == 2 {
+			fmt.Println("Received bat with data, batId: ", data[0])
+			fmt.Println("Received bat with data, batPath: ", data[1])
+			utils.ExecPyFile(a.ctx, data[0].(string), data[1].(string))
+		} else if len(data) > 0 && len(data) < 2 {
+			fmt.Println("Received bat with data, required 2 paramters, found 1: ", data[0])
+		} else {
+			fmt.Println("Received bat without data")
+		}
+	})
+
 }
 
 // Greet returns a greeting for the given name
@@ -71,4 +84,20 @@ func (a *App) ReadAll(filePath string) string {
 
 func (a *App) SaveFile(filePath string, data string) {
 	utils.SaveFile(filePath, data)
+}
+
+func (a *App) PathExists(path string) bool {
+	exists, _ := utils.PathExists(path)
+	return exists
+}
+
+func (a *App) DirSize(path string) int64 {
+	utils.Log("DirSize path: ", path)
+	size, _ := utils.DirSize(path)
+	utils.Log("DirSize size: ", size)
+	return size
+}
+
+func (a *App) AppPath() string {
+	return utils.AppPath()
 }

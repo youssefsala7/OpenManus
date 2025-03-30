@@ -187,11 +187,22 @@ img.edit:hover {
 
 .main-content {
   width: 100%;
+  padding: 0px 16px;
+  margin-top: 16px;
+  margin-bottom: 16px;
+}
+
+.main-content-full-height {
+  width: 100%;
   /** 44 + 16 + 16 */
   height: calc(100vh - 76px);
   padding: 0px 16px;
   margin-top: 16px;
   margin-bottom: 16px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center !important;
+  align-items: center;
 }
 
 /** Element Plus Start */
@@ -354,7 +365,7 @@ div.el-divider {
 }
 
 .el-step__description {
-  padding-right: 0px!important;
+  padding-right: 0px !important;
 }
 
 /** Element Plus End */
@@ -457,6 +468,13 @@ div.el-divider {
   flex-direction: column;
   justify-content: center !important;
   align-items: center;
+}
+
+.fys {
+  display: flex;
+  flex-direction: column;
+  justify-content: center !important;
+  align-items: start;
 }
 
 .fxsb {
@@ -1341,6 +1359,10 @@ h6.el-text {
   overflow-x: auto;
 }
 
+.min-h32 {
+  min-height: 32px !important;
+}
+
 .min-h46 {
   min-height: 46px !important;
 }
@@ -1355,6 +1377,14 @@ h6.el-text {
 
 .w-auto {
   width: auto !important;
+}
+
+.max-w-400 {
+  max-width: 400px !important;
+}
+
+.max-w-500 {
+  max-width: 500px !important;
 }
 
 .max-w-640 {

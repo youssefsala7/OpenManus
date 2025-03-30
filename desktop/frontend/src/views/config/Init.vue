@@ -3,34 +3,56 @@
     <el-card>
       <template #header>
         <div class="title fxsb">
-          <div>{{ t('envConfig') }}</div>
+          <div>{{ t('initConfig') }}</div>
         </div>
       </template>
 
       <!-- Show Data -->
-      <el-steps direction="vertical" :active="1">
-        <el-step title="Step 1">
+      <el-steps direction="vertical" :active="stepActive">
+        <el-step title="Step 1" :status="initCheck.envLib ? 'success' : 'wait'">
           <template #description>
             <el-card class="mtb-10">
-              <div class="fxsb">
+              <div class="fxsb min-h32">
                 <div>
                   <el-text class="pr-10">{{ t('envLibDownload') }}:</el-text>
-                  <el-text>{{ t('checkedPass') }}</el-text>
+                  <el-text>
+                    {{ envLibDownloadLoading ? t('envLibDownloading')
+                      : (initCheck.envLib ? t('checkedPass') : t('checkedFailed')) }}
+                  </el-text>
                 </div>
-                <el-button type="primary" class="mlr-10" @click="envLibDownload">{{ t('envLibDownload') }}</el-button>
+                <el-button type="primary" class="mlr-10" @click="envLibDownload"
+                  v-show="!initCheck.envLib && !envLibDownloadLoading">
+                  {{ t('envLibDownload') }}
+                </el-button>
+              </div>
+
+              <div class="wp-100" v-show="envLibDownloadLoading">
+                <el-progress :percentage="envLibDownloadProgress.percentage" :stroke-width="15"
+                  :status="envLibDownloadProgress.status" striped
+                  :striped-flow="envLibDownloadProgress.status != 'success'" :duration="10" class="mtb-10" />
+                <div class="wp-100">
+                  <div>
+                    <el-text class="download-progress-tips">{{ t('envLibDownloadTips') }}</el-text>
+                  </div>
+                  <div class="max-w-500">
+                    <el-text class="download-progress-tips" truncated>
+                      {{ envLibDownloadProgress.text }}
+                    </el-text>
+                  </div>
+                </div>
               </div>
             </el-card>
           </template>
         </el-step>
 
-        <el-step title="Step 2">
+        <el-step title="Step 2" :status="initCheck.serverConfig ? 'success' : 'wait'">
           <template #description>
             <el-card class="mtb-10">
               <template #header>
                 <div class="fxsb">
                   <div>
                     <el-text class="pr-10">{{ t('serverConfig') }}:</el-text>
-                    <el-text>{{ t('checkedPass') }}</el-text>
+                    <el-text>{{ initCheck.serverConfig ? t('checkedPass') : t('checkedFailed') }}</el-text>
                   </div>
                   <el-link type="primary" class="mlr-10" @click="toEdit('server')">{{ t('edit') }}</el-link>
                 </div>
@@ -76,14 +98,14 @@
           </template>
         </el-step>
 
-        <el-step title="Step 3">
+        <el-step title="Step 3" :status="initCheck.llmConfig ? 'success' : 'wait'">
           <template #description>
             <el-card class="mtb-10">
               <template #header>
                 <div class="fxsb">
                   <div>
                     <el-text class="pr-10">{{ t('llmConfig') }}:</el-text>
-                    <el-text>{{ t('checkedPass') }}</el-text>
+                    <el-text>{{ initCheck.llmConfig ? t('checkedPass') : t('checkedFailed') }}</el-text>
                   </div>
                   <div>
                     <el-link type="primary" class="no-select plr-6" @click="toEdit('llm')" v-show="llmShow">
@@ -174,16 +196,23 @@
       </el-steps>
 
     </el-card>
+
+    <el-card v-show="initCheckPass">
+      <div class="fxc mtb-20">
+        <el-button type="primary" @click="startTheExperience" size="large"> {{ t('startTheExperience') }} </el-button>
+      </div>
+    </el-card>
+
   </div>
 
 </template>
 
 <script setup>
-import { ref, reactive, inject, computed, onMounted } from 'vue'
+import { ref, reactive, inject, computed, onMounted, onUnmounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { useConfig } from '@/store/config'
 import { useI18n } from 'vue-i18n'
-import { EventsEmit, EventsOn } from '../../../wailsjs/runtime/runtime'
+import { EventsEmit, EventsOff, EventsOn } from '../../../wailsjs/runtime/runtime'
 
 const utils = inject('utils')
 const verify = inject('verify')
@@ -262,24 +291,124 @@ const llmConfigUpd = reactive({
   temperature: null,
 })
 
-function envLibDownload() {
-  const runBatPath = "D:\\GitHubProjects\\OpenManus\\run.bat"
+const initCheck = reactive({
+  envLib: true,
+  serverConfig: false,
+  llmConfig: false,
+})
 
+const envLibDownloadProgress = reactive({
+  status: null,
+  percentage: 0,
+  text: '豆腐干豆腐干豆腐干豆腐干地方 人地方官梵蒂冈的豆腐干豆腐干地方 人地方官梵蒂冈的豆腐干豆腐干地方 人地方官梵蒂冈的豆腐干豆腐干地方 人地方官梵蒂冈的豆腐干豆腐干地方 人地方官梵蒂冈的豆腐干豆腐干地方 人地方官梵蒂冈的豆腐干豆腐干地方 人地方官梵蒂冈的豆腐干豆腐干地方 人地方官梵蒂冈的豆腐干豆腐干地方 人地方官梵蒂冈的豆腐干豆腐干地方 人地方官梵蒂冈的地方 人地方官梵蒂冈的',
+})
+
+function envLibCheck() {
+  const envLibPath = appDataPath.value + "\\venv"
+  files.pathExists(envLibPath).then((exists) => {
+    console.log('envLibPath exists: ', exists)
+    if (exists) {
+      initCheck.envLib = true
+      return
+    } else {
+      initCheck.envLib = false
+      return
+    }
+  })
+}
+
+const envLibDownloadLoading = ref(false)
+
+function envLibDownload() {
+  const runBatPath = appDataPath.value + "\\run.bat"
   if (EventsEmit) {
+    // 触发执行bat命令事件给后台
     console.log('EventsEmit: ', EventsEmit)
-    EventsEmit('bat', 'Exec bat cmd', runBatPath)
+    EventsEmit('bat', 'ExecRunBat', runBatPath)
+    envLibDownloadLoading.value = true
   }
 
 }
 
-onMounted(() => {
+
+function venvFolderSizeCheck() {
+  const targetSize = 1024 * 1024 * 1024 * 2 // 2GB
+  // 检测venv文件夹大小, 计算百分比
+  const envLibPath = appDataPath.value + "\\venv"
+  files.dirSize(envLibPath).then((size) => {
+    console.log('envLibPath size: ', size)
+    envLibDownloadProgress.percentage = Math.floor((size / targetSize) * 100)
+    console.log('envLibDownloadProgress.percentage: ', envLibDownloadProgress.percentage)
+    if (envLibDownloadProgress.percentage >= 100) {
+      envLibDownloadProgress.percentage = 99
+    }
+  })
+}
+
+const appDataPath = ref()
+
+onMounted(async () => {
   // 读取配置文件config/config.toml
   loadConfig()
-
-
-  EventsOn('Exec bat cmd', (type, data) => {
-    console.log('bat cmd exc: ', type, data)
+  await files.awaitAppPath().then((path) => {
+    appDataPath.value = path
+    console.log('appDataPath: ', appDataPath.value)
+    if (appDataPath.value && appDataPath.value.endsWith('\\desktop\\build\\bin')) {
+      appDataPath.value = appDataPath.value.replace('\\desktop\\build\\bin', '')
+    }
+    console.log('appDataPath: ', appDataPath.value)
   })
+
+  // 监听后台执行bat命令事件
+  EventsOn('ExecRunBat', (type, data) => {
+    console.log('bat cmd exc: ', type, data)
+    venvFolderSizeCheck()
+    envLibDownloadLoading.value = true
+    if (type == 'msg') {
+      envLibDownloadProgress.text = data
+    }
+    if (data.startsWith('Press any key to continue')) {
+      console.log('envLib download finished')
+      envLibDownloadLoading.value = false
+      envLibDownloadProgress.percentage = 100
+      envLibDownloadProgress.status = 'success'
+      envLibDownloadProgress.text = t('envLibDownloadSuccess')
+      initCheck.envLib = true
+      utils.pop(t('envLibDownloadSuccess'))
+    }
+  })
+
+  // 检查环境
+  envLibCheck()
+})
+
+const stepActive = computed(() => {
+  if (!initCheck.envLib) {
+    return 0
+  }
+  if (!initCheck.serverConfig) {
+    return 1
+  }
+  if (!initCheck.llmConfig) {
+    return 2
+  }
+  return 0
+})
+
+const initCheckPass = computed(() => {
+  return initCheck.envLib && initCheck.serverConfig && initCheck.llmConfig
+})
+
+function startTheExperience() {
+  utils.pop(t('startTheExperienceSuccess'))
+  EventsEmit('pyFile', 'ExecAppPy', appDataPath.value + '\\app.py')
+  config.setInit(true)
+  router.push({ path: '/task' })
+}
+
+onUnmounted(() => {
+  // 取消监听后台执行bat命令事件
+  EventsOff('ExecRunBat', null)
 })
 
 function loadConfig() {
@@ -288,22 +417,26 @@ function loadConfig() {
     console.log("config/config.toml: ", node)
     if (utils.isBlank(node)) {
       readConfigSuccess.value = false
+      initCheck.serverConfig = false
       utils.pop(t('readTomlFailed'))
       return
     }
     utils.copyProps(node, serverConfig)
     utils.copyProps(node, serverConfigUpd)
+    initCheck.serverConfig = true
   })
 
   files.readTomlNode(filePath, "llm").then((node) => {
     console.log("config/config.toml: ", node)
     if (utils.isBlank(node)) {
       readConfigSuccess.value = false
+      initCheck.llmConfig = false
       utils.pop(t('readTomlFailed'))
       return
     }
     utils.copyProps(node, llmConfig)
     utils.copyProps(node, llmConfigUpd)
+    initCheck.llmConfig = true
   })
 }
 
@@ -356,7 +489,6 @@ const submitServerConfig = async () => {
   }
 }
 
-
 const submitLlmConfig = async () => {
   try {
     await ruleFormRef.value.validate();
@@ -375,4 +507,12 @@ const submitLlmConfig = async () => {
 
 </script>
 
-<style scoped></style>
+<style scoped>
+.download-progress-tips {
+  max-width: 100%;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+</style>

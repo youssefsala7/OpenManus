@@ -3,9 +3,13 @@ package utils
 import (
 	"encoding/json"
 	"fmt"
+	"io"
 	"reflect"
 	"strconv"
 	"strings"
+
+	"golang.org/x/text/encoding/simplifiedchinese"
+	"golang.org/x/text/transform"
 )
 
 // AnyToStr 任意类型数据转string
@@ -61,4 +65,18 @@ func IsBlank(s string) bool {
 
 func IsNotBlank(s string) bool {
 	return len(s) > 0 && strings.TrimSpace(s) != ""
+}
+
+func GbkToUtf8(s string) string {
+	gbkBytes := []byte(s)
+	// 使用transform.Reader将GBK转换为UTF-8
+	reader := transform.NewReader(strings.NewReader(string(gbkBytes)), simplifiedchinese.GBK.NewDecoder())
+	utf8Bytes, err := io.ReadAll(reader)
+	if err != nil {
+		fmt.Println("Error converting from GBK: ", err)
+		return s
+	}
+
+	fmt.Println("Converted to UTF-8: ", string(utf8Bytes))
+	return string(utf8Bytes)
 }
