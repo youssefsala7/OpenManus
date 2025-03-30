@@ -31,6 +31,8 @@ func ExecBatFile(ctx context.Context, batId string, batPath string) {
 	}
 
 	cmd = exec.Command("cmd", "/C", batPath)
+	// 设置cmd.SysProcAttr.HideWindow为true以隐藏cmd窗口
+	cmd.SysProcAttr = &syscall.SysProcAttr{HideWindow: true}
 	cmd.Env = os.Environ()
 	cmd.Env = append(cmd.Env, "PYTHONIOENCODING=utf-8")
 
