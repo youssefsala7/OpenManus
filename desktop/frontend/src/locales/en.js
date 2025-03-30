@@ -79,4 +79,5 @@ export default {
   startTheExperience: "Start the Experience",
   startOpenManusService: "Start OpenManus Service, Please Wait...",
   initConfigFirst: "Please init config first",
+  openManusIsStarting: "OpenManus is starting, please wait...",
 }

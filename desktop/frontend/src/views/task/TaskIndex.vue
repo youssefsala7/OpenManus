@@ -117,6 +117,7 @@
 <script setup>
 import { ref, reactive, watch, inject, computed, onMounted, onUnmounted } from 'vue'
 import { FolderAdd, Promotion, CircleClose, ArrowRight } from '@element-plus/icons-vue'
+import { EventsEmit, EventsOff, EventsOn } from '../../../wailsjs/runtime/runtime'
 import { useConfig } from '@/store/config'
 import { useI18n } from 'vue-i18n'
 
@@ -131,7 +132,7 @@ const promptEle = ref(null)
 const eventTypes = ['think', 'tool', 'act', 'log', 'run', 'message']
 const eventSource = ref(null)
 
-const newTaskFlag = ref(false)
+const newTaskFlag = ref(true)
 
 const taskInfo = computed(() => {
   if (newTaskFlag.value) {
@@ -338,6 +339,23 @@ onMounted(async () => {
   startNewTask()
 })
 
+async function checkStartOpenManusService() {
+  // 检查服务是否启动, 未启动则启动
+  // windows查询占用端口的应用 netstat -ano | findstr 5172
+  // tasklist | findstr [pid] 12345
+  // taskkill -f -pid 12345
+  let isServiceRunning = false
+  await utils.awaitCheckPort(serverConfig.port).then((portInUse) => {
+    isServiceRunning = portInUse
+    console.log("isServiceRunning:", isServiceRunning)
+  })
+  if (!isServiceRunning) {
+    utils.pop(t('openManusIsStarting'))
+    EventsEmit('pyFile', 'ExecAppPy', appDataPath.value + '\\app.py')
+  }
+}
+
+
 function loadServerConfig() {
   const filePath = appDataPath.value + "\\config\\config.toml"
   files.readTomlNode(filePath, "server").then((node) => {
@@ -347,6 +365,7 @@ function loadServerConfig() {
       return
     }
     utils.copyProps(node, serverConfig)
+    checkStartOpenManusService()
   })
 }
 

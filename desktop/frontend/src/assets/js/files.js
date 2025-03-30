@@ -293,6 +293,10 @@ function dirSize(path) {
   return DirSize(path)
 }
 
+async function awaitDirSize(path) {
+  return await dirSize(path)
+}
+
 function appPath(path) {
   return AppPath(path)
 }
@@ -328,6 +332,7 @@ export default {
   saveTomlNode,
   pathExists,
   dirSize,
+  awaitDirSize,
   appPath,
   awaitAppPath,
 }

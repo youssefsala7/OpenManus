@@ -6,6 +6,10 @@ export function AppPath() {
   return window['go']['main']['App']['AppPath']();
 }
 
+export function CheckPort(arg1) {
+  return window['go']['main']['App']['CheckPort'](arg1);
+}
+
 export function DirSize(arg1) {
   return window['go']['main']['App']['DirSize'](arg1);
 }

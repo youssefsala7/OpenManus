@@ -1,4 +1,4 @@
-import { Greet } from '@/../wailsjs/go/main/App.js'
+import { Greet, CheckPort } from '@/../wailsjs/go/main/App.js'
 import axios from "axios"
 import { ElMessage } from 'element-plus'
 
@@ -82,8 +82,15 @@ async function awaitDel(url, param) {
 function greet(name) {
   return Greet(name).then(resp => {
     console.log("greet resp:", resp)
-    return resp
   })
+}
+
+function checkPort(port) {
+  return CheckPort(port)
+}
+
+async function awaitCheckPort(port) {
+  return await checkPort(port)
 }
 
 /**
@@ -688,4 +695,7 @@ export default {
 
   stringToLines,
 
+  checkPort,
+
+  awaitCheckPort,
 }

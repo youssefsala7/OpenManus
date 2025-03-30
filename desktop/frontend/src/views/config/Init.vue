@@ -326,23 +326,32 @@ function envLibDownload() {
     console.log('EventsEmit: ', EventsEmit)
     EventsEmit('bat', 'ExecRunBat', runBatPath)
     envLibDownloadLoading.value = true
+    venvFolderSizeCheck()
   }
 
 }
 
-
-function venvFolderSizeCheck() {
+async function venvFolderSizeCheck() {
   const targetSize = 1024 * 1024 * 1024 * 2 // 2GB
   // 检测venv文件夹大小, 计算百分比
   const envLibPath = appDataPath.value + "\\venv"
-  files.dirSize(envLibPath).then((size) => {
+  await files.awaitDirSize(envLibPath).then((size) => {
     console.log('envLibPath size: ', size)
-    envLibDownloadProgress.percentage = Math.floor((size / targetSize) * 100)
+    const percentage = Math.floor((size / targetSize) * 100)
+    if (envLibDownloadProgress.percentage < percentage) {
+      envLibDownloadProgress.percentage = percentage
+    }
     console.log('envLibDownloadProgress.percentage: ', envLibDownloadProgress.percentage)
     if (envLibDownloadProgress.percentage >= 100) {
       envLibDownloadProgress.percentage = 99
     }
   })
+  // 递归检测
+  if (envLibDownloadLoading.value && envLibDownloadProgress.percentage < 100) {
+    setTimeout(() => {
+      venvFolderSizeCheck()
+    }, 300)
+  }
 }
 
 const appDataPath = ref()
@@ -362,12 +371,13 @@ onMounted(async () => {
   // 监听后台执行bat命令事件
   EventsOn('ExecRunBat', (type, data) => {
     console.log('bat cmd exc: ', type, data)
-    venvFolderSizeCheck()
     envLibDownloadLoading.value = true
     if (type == 'msg') {
       envLibDownloadProgress.text = data
     }
-    if (data.startsWith('Press any key to continue')) {
+    if (data.startsWith('Press any key to continue')
+      || (data.endsWith('. . .') && envLibDownloadProgress.percentage >= 99)) {
+      // data.endsWith('. . .') 兼容中文环境下的bat命令输出
       console.log('envLib download finished')
       envLibDownloadLoading.value = false
       envLibDownloadProgress.percentage = 100
@@ -400,8 +410,6 @@ const initCheckPass = computed(() => {
 })
 
 function startTheExperience() {
-  utils.pop(t('startTheExperienceSuccess'))
-  EventsEmit('pyFile', 'ExecAppPy', appDataPath.value + '\\app.py')
   config.setInit(true)
   router.push({ path: '/task' })
 }

@@ -3,6 +3,8 @@
 
 export function AppPath():Promise<string>;
 
+export function CheckPort(arg1:string):Promise<boolean>;
+
 export function DirSize(arg1:string):Promise<number>;
 
 export function Greet(arg1:string):Promise<string>;

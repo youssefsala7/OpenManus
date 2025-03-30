@@ -78,4 +78,5 @@ export default {
   startTheExperience: "开始体验",
   startOpenManusService: "启动OpenManus服务, 请稍候...",
   initConfigFirst: "请先完成初始化配置",
+  openManusIsStarting: "OpenManus正在启动中, 请稍候...",
 }

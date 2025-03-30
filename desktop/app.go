@@ -101,3 +101,7 @@ func (a *App) DirSize(path string) int64 {
 func (a *App) AppPath() string {
 	return utils.AppPath()
 }
+
+func (a *App) CheckPort(port string) bool {
+	return utils.CheckPort(port)
+}
