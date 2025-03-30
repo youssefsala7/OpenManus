@@ -26,7 +26,7 @@
                 </el-button>
               </div>
 
-              <div class="wp-100" v-show="!envLibDownloadLoading">
+              <div class="wp-100" v-show="envLibDownloadLoading">
                 <el-progress :percentage="envLibDownloadProgress.percentage" :stroke-width="15"
                   :status="envLibDownloadProgress.status" striped
                   :striped-flow="envLibDownloadProgress.status != 'success'" :duration="10" class="mtb-10" />
@@ -296,7 +296,7 @@ const initCheck = reactive({
 const envLibDownloadProgress = reactive({
   status: null,
   percentage: 0,
-  text: '豆腐干豆腐干豆腐干豆腐干地方 人地方官梵蒂冈的豆腐干豆腐干地方 人地方官梵蒂冈的豆腐干豆腐干地方 人地方官梵蒂冈的豆腐干豆腐干地方 人地方官梵蒂冈的豆腐干豆腐干地方 人地方官梵蒂冈的豆腐干豆腐干地方 人地方官梵蒂冈的豆腐干豆腐干地方 人地方官梵蒂冈的豆腐干豆腐干地方 人地方官梵蒂冈的豆腐干豆腐干地方 人地方官梵蒂冈的豆腐干豆腐干地方 人地方官梵蒂冈的地方 人地方官梵蒂冈的',
+  text: '',
 })
 
 function envLibCheck() {
