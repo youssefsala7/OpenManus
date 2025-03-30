@@ -245,6 +245,10 @@ button.el-button--default {
   font-size: 14px;
 }
 
+button.el-button--large {
+  font-size: 18px;
+}
+
 button>span.el-button__text--expand {
   font-size: 14px;
 }
@@ -347,6 +351,10 @@ div.el-divider {
 
 .el-form-item {
   margin-bottom: auto !important;
+}
+
+.el-step__description {
+  padding-right: 0px!important;
 }
 
 /** Element Plus End */
@@ -509,20 +517,33 @@ div.el-divider {
   flex-wrap: wrap;
 }
 
-.header-logo,
-.header-title {
-  padding: 4px 10px;
-}
-
-.header-title h1 {
-  font-size: 16px;
-  font-weight: 300;
+h1.el-text {
+  --el-text-font-size: 48px;
   letter-spacing: -0.5px
 }
 
-.header-title h2 {
+h2.el-text {
+  --el-text-font-size: 32px;
+  letter-spacing: -0.5px
+}
+
+h3.el-text {
+  --el-text-font-size: 24px;
+  letter-spacing: -0.5px
+}
+
+h4.el-text {
   --el-text-font-size: 20px;
-  font-weight: 500;
+  letter-spacing: -0.5px
+}
+
+h5.el-text {
+  --el-text-font-size: 16px;
+  letter-spacing: -0.5px
+}
+
+h6.el-text {
+  --el-text-font-size: 14px;
   letter-spacing: -0.5px
 }
 
@@ -1001,6 +1022,10 @@ div.el-divider {
   margin-top: 18px !important;
 }
 
+.mt-20 {
+  margin-top: 20px !important;
+}
+
 .mr-8 {
   margin-right: 8px;
 }
@@ -1090,6 +1115,11 @@ div.el-divider {
 .mtb-18 {
   margin-top: 18px !important;
   margin-bottom: 18px !important;
+}
+
+.mtb-20 {
+  margin-top: 20px !important;
+  margin-bottom: 20px !important;
 }
 
 .plr-4 {

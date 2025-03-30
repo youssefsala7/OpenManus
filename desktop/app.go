@@ -4,6 +4,8 @@ import (
 	"OpenManus/src/utils"
 	"context"
 	"fmt"
+
+	"github.com/wailsapp/wails/v2/pkg/runtime"
 )
 
 // App struct
@@ -26,6 +28,31 @@ func NewApp() *App {
 // so we can call the runtime methods
 func (a *App) startup(ctx context.Context) {
 	a.ctx = ctx
+
+	// 注册事件监听器
+	runtime.EventsOn(ctx, "events", func(data ...interface{}) {
+		if len(data) > 0 {
+			for i := 0; i < len(data); i++ {
+				fmt.Println("Received events with data:", data[i])
+			}
+		} else {
+			fmt.Println("Received events without data")
+		}
+	})
+
+	// 注册bat批处理事件监听器
+	runtime.EventsOn(ctx, "bat", func(data ...interface{}) {
+		if len(data) == 2 {
+			fmt.Println("Received bat with data, batId: ", data[0])
+			fmt.Println("Received bat with data, batPath: ", data[1])
+			utils.ExecBatFile(a.ctx, data[0].(string), data[1].(string))
+		} else if len(data) > 0 && len(data) < 2 {
+			fmt.Println("Received bat with data, required 2 paramters, found 1: ", data[0])
+		} else {
+			fmt.Println("Received bat without data")
+		}
+	})
+
 }
 
 // Greet returns a greeting for the given name
@@ -35,6 +62,7 @@ func (a *App) Greet(name string) string {
 
 // ReadAll reads file content
 func (a *App) ReadAll(filePath string) string {
+	utils.Log("ReadAll filePath: ", filePath)
 	// Read the file content, resulting in a JSON string containing file content and callback ID
 	data := string(utils.ReadAll(filePath))
 	utils.Log("ReadAll data: ", data)

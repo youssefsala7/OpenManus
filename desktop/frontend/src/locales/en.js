@@ -55,5 +55,17 @@ export default {
   expandAll: "Expand All",
   collapseAll: "Collapse All",
   generatedContent: "Generated Content",
-
+  welcomeUseOpenManus: "Welcome to use OpenManus",
+  welcomeUseOpenManusTips: "OpenManus is a powerful AI assistant that can help you with a wide range of tasks. It can generate code, write articles, and answer questions. You can use it to save time and effort. Let's get started!",
+  getStarted: "Get Started",
+  docs: "Docs",
+  toIndex: "To Index",
+  envConfig: "Env Config",
+  step1: "Step 1",
+  step2: "Step 2",
+  step3: "Step 3",
+  envLibDownload: "Dependency Libary Download",
+  checkedPass: "Checked OK",
+  checkedFailed: "Checked Failed",
+  llmConfig: "LLM Config",
 }

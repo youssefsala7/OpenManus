@@ -181,9 +181,6 @@ const ruleFormRef = ref()
 const rules = reactive({
   host: [{ validator: verify.validator('notBlank'), trigger: 'blur' }],
   port: [{ validator: verify.validator('notBlank'), trigger: 'blur' }],
-  api_key: [{ validator: verify.validator('notBlank'), trigger: 'blur' }],
-  max_tokens: [{ validator: verify.validator('notBlank'), trigger: 'blur' }],
-  temperature: [{ validator: verify.validator('notBlank'), trigger: 'blur' }],
 })
 
 const submitForm = async () => {
