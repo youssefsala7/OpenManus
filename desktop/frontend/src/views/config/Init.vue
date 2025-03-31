@@ -32,7 +32,7 @@
                   :striped-flow="envLibDownloadProgress.status != 'success'" :duration="10" class="mtb-10" />
                 <div class="wp-100">
                   <el-text class="download-progress-tips">{{ t('envLibDownloadTips') }}</el-text>
-                  <el-text class="download-progress-tips max-w-500" truncated>
+                  <el-text class="download-progress-tips" truncated>
                     {{ envLibDownloadProgress.text }}
                   </el-text>
                 </div>
@@ -512,8 +512,11 @@ const submitLlmConfig = async () => {
 </script>
 
 <style scoped>
+:deep(.el-step.is-vertical .el-step__main) {
+  width: calc(100% - 34px);
+}
+
 .download-progress-tips {
-  max-width: 100%;
   max-width: 100%;
   overflow: hidden;
   text-overflow: ellipsis;
