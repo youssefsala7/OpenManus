@@ -1,19 +1,13 @@
 import asyncio
 
-from app.agent.ppt import PPTAgent
+from app.agent.manus import Manus
 from app.logger import logger
 
 
 async def main():
-    agent = PPTAgent()
+    agent = Manus()
     try:
-        prompt = '''
-I am a lecturer. I am teaching the machine learning coure for research students. Please generate latex code for lecture slide for different reinforcement learning algorithms.
-Note that:
-1). Note that the lecture duration is 2 hour, so we need to generate 30 pages.
-2). for each reinforcement learning algorithms, the slide should include motivation, problem and intuitive solution and detailed math equations.
-3). Please make sure each slide have a good self-contain and sufficient content.
-'''
+        prompt = input("Enter your prompt: ")
         if not prompt.strip():
             logger.warning("Empty prompt provided.")
             return
@@ -23,6 +17,9 @@ Note that:
         logger.info("Request processing completed.")
     except KeyboardInterrupt:
         logger.warning("Operation interrupted.")
+    finally:
+        # Ensure agent resources are cleaned up before exiting
+        await agent.cleanup()
 
 
 if __name__ == "__main__":
