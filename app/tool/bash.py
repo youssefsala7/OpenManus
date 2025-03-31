@@ -1,6 +1,5 @@
 import asyncio
 import os
-import platform
 from typing import Optional
 
 from app.exceptions import ToolError
@@ -20,7 +19,7 @@ class _BashSession:
     _started: bool
     _process: asyncio.subprocess.Process
 
-    command: str = "/bin/bash" if platform.system() != "Windows" else "cmd.exe"
+    command: str = "/bin/bash"
     _output_delay: float = 0.2  # seconds
     _timeout: float = 120.0  # seconds
     _sentinel: str = "<<exit>>"
@@ -33,21 +32,14 @@ class _BashSession:
         if self._started:
             return
 
-        # Only use preexec_fn on Unix-like systems
-        kwargs = {
-            "shell": True,
-            "bufsize": 0,
-            "stdin": asyncio.subprocess.PIPE,
-            "stdout": asyncio.subprocess.PIPE,
-            "stderr": asyncio.subprocess.PIPE,
-        }
-
-        if platform.system() != "Windows":
-            kwargs["preexec_fn"] = os.setsid
-
         self._process = await asyncio.create_subprocess_shell(
             self.command,
-            **kwargs
+            preexec_fn=os.setsid,
+            shell=True,
+            bufsize=0,
+            stdin=asyncio.subprocess.PIPE,
+            stdout=asyncio.subprocess.PIPE,
+            stderr=asyncio.subprocess.PIPE,
         )
 
         self._started = True
