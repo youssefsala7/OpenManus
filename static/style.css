@@ -62,13 +62,37 @@ body {
 }
 
 .set-config-panel {
-    background: white;
+    display: flex;
+    gap: 10px;
+    align-items: center;
     border-radius: 8px;
     box-shadow: 0 2px 8px rgba(0,0,0,0.1);
 }
 
+#language-select {
+    flex: 0 0 120px;
+    padding: 12px;
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    font-size: 1rem;
+    background-color: var(--bg-color);
+    cursor: pointer;
+    transition: border-color 0.3s ease;
+}
+
+#language-select:hover {
+    border-color: var(--primary-color);
+}
+
+#language-select:focus {
+    outline: none;
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.25);
+}
+
 #config-button {
-    width: 100%;
+    flex: 1;
+    white-space: nowrap;
     padding: 12px;
     background-color: var(--primary-color);
     color: white;
