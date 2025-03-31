@@ -1,19 +1,38 @@
 import { createRouter, createWebHashHistory } from 'vue-router'
 
+const localConfig = localStorage.getItem('config') ? JSON.parse(localStorage.getItem('config')) : {}
+const init = localConfig.init? localConfig.init : false
+
 const router = createRouter({
   history: createWebHashHistory(),
   routes: [
     {
       path: '/',
-      component: () => import('@/components/MainFrame.vue'),
+      component: () => import('@/components/SimpleFrame.vue'),
       meta: {
         title: "主页"
       },
       // 重定向到默认页面
-      redirect: '/task',
+      redirect: init ? '/task' : '/home',
       children: [
         {
-          path: 'task',
+          path: 'home',
+          component: () => import('@/views/Home.vue'),
+          meta: {
+            title: "主页"
+          }
+        }
+      ]
+    },
+    {
+      path: '/task',
+      component: () => import('@/components/MainFrame.vue'),
+      meta: {
+        title: "任务"
+      },
+      children: [
+        {
+          path: '',
           component: () => import('@/views/task/TaskIndex.vue'),
           meta: {
             keepAlive: true,
@@ -22,7 +41,7 @@ const router = createRouter({
           }
         },
         {
-          path: 'task/:id',
+          path: ':id',
           component: () => import('@/views/task/TaskInfo.vue'),
           meta: {
             keepAlive: true,
@@ -32,6 +51,24 @@ const router = createRouter({
         },
         {
           path: 'history',
+          component: () => import('@/views/task/HistoryIndex.vue'),
+          meta: {
+            keepAlive: true,
+            title: "历史记录",
+            index: 0
+          }
+        },
+      ]
+    },
+    {
+      path: '/history',
+      component: () => import('@/components/MainFrame.vue'),
+      meta: {
+        title: "历史记录"
+      },
+      children: [
+        {
+          path: '',
           component: () => import('@/views/task/HistoryIndex.vue'),
           meta: {
             keepAlive: true,
@@ -67,12 +104,12 @@ const router = createRouter({
           }
         },
         {
-          path: 'theme',
-          component: () => import('@/views/config/Theme.vue'),
+          path: 'init',
+          component: () => import('@/views/config/Init.vue'),
           meta: {
             keepAlive: false,
-            title: "主题",
-            index: 1
+            title: "初始化配置",
+            index: 0
           }
         },
       ]

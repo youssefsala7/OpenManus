@@ -31,3 +31,4 @@ wails build
     npm install axios
     npm install qs
     npm i --save-dev @types/qs
+    npm install marked

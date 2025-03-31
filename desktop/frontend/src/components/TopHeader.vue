@@ -55,23 +55,27 @@
 </template>
 
 <script setup>
-import { onMounted, ref } from 'vue'
+import { onMounted, ref, reactive, inject } from 'vue'
 import { ArrowDown, Refresh, Moon, Sunny } from '@element-plus/icons-vue'
 import { useConfig } from '@/store/config'
 /** 暗黑主题切换 */
 import { useDark } from '@vueuse/core'
+import { useI18n } from 'vue-i18n'
 
+const utils = inject("utils")
+const files = inject("files")
 const config = useConfig()
 const isDark = useDark()
+const { t } = useI18n()
 
-const modelList = ref(config.modelList)
+const modelList = ref([])
 
-const selectedModel = ref(config.selectedModel != null ? config.selectedModel : modelList.value[0])
-
+const selectedModel = ref(config.selectedModel)
 
 function handleSwitchModel(mod) {
   // console.log("handleSwitchModel:", model)
   selectedModel.value = mod
+  config.setSelectedModel(mod)
 }
 
 const langList = ref(config.langList)
@@ -84,6 +88,56 @@ function handleSwitchLang(lang) {
   // i18n.locale = lang.code
   location.reload()
 }
+
+const llmConfig = reactive({
+  model: null,
+  base_url: null,
+  api_key: null,
+  max_tokens: null,
+  temperature: null,
+})
+
+function loadLlmConfig() {
+  const filePath = appDataPath.value + "\\config\\config.toml"
+  files.readTomlNode(filePath, "llm").then((node) => {
+    console.log("config/config.toml: ", node)
+    if (utils.isBlank(node)) {
+      utils.pop(t('readTomlFailed'))
+      return
+    }
+    utils.copyProps(node, llmConfig)
+    let model = node.model
+    if (utils.isBlank(model)) {
+      model = "No Model"
+    }
+    if (model.startsWith("\"")) {
+      model = model.substring(1)
+    }
+    if (model.endsWith("\"")) {
+      model = model.substring(0, model.length - 1)
+    }
+    utils.clearArray(modelList.value)
+    modelList.value.push(model)
+    if (selectedModel.value == null) {
+      config.setSelectedModel(modelList.value[0])
+    }
+  })
+}
+
+const appDataPath = ref()
+
+onMounted(async () => {
+  await files.awaitAppPath().then((path) => {
+    appDataPath.value = path
+    console.log('appDataPath: ', appDataPath.value)
+    if (appDataPath.value && appDataPath.value.endsWith('\\desktop\\build\\bin')) {
+      appDataPath.value = appDataPath.value.replace('\\desktop\\build\\bin', '')
+    }
+    console.log('appDataPath: ', appDataPath.value)
+  })
+  // 读取配置文件config/config.toml
+  loadLlmConfig()
+})
 
 function refresh() {
   location.reload()
@@ -102,7 +156,7 @@ function refresh() {
 .el-dropdown-link {
   text-align: center;
   cursor: pointer;
-  min-width: 80px;
+  min-width: 40px;
   color: var(--el-color-primary);
   display: flex;
   align-items: center;

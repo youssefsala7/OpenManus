@@ -1,5 +1,5 @@
 :root {
-  --el-menu-base-level-padding: 10px !important;
+  --el-menu-base-level-padding: 4px !important;
   /** Indents for submenu items */
   --el-menu-level-padding: 20px !important;
 }
@@ -187,11 +187,22 @@ img.edit:hover {
 
 .main-content {
   width: 100%;
+  padding: 0px 16px;
+  margin-top: 16px;
+  margin-bottom: 16px;
+}
+
+.main-content-full-height {
+  width: 100%;
   /** 44 + 16 + 16 */
   height: calc(100vh - 76px);
   padding: 0px 16px;
   margin-top: 16px;
   margin-bottom: 16px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center !important;
+  align-items: center;
 }
 
 /** Element Plus Start */
@@ -245,6 +256,10 @@ button.el-button--default {
   font-size: 14px;
 }
 
+button.el-button--large {
+  font-size: 18px;
+}
+
 button>span.el-button__text--expand {
   font-size: 14px;
 }
@@ -270,7 +285,7 @@ button>span.el-button__text--expand {
 
 /* If defined in AsideMenu, menu components associated may not read some overridden styles */
 .el-sub-menu__title {
-  padding: 0px 10px !important;
+  padding: 0px 4px !important;
   border-radius: 6px;
   border: none !important;
 }
@@ -347,6 +362,10 @@ div.el-divider {
 
 .el-form-item {
   margin-bottom: auto !important;
+}
+
+.el-step__description {
+  padding-right: 0px !important;
 }
 
 /** Element Plus End */
@@ -444,6 +463,20 @@ div.el-divider {
   align-items: center;
 }
 
+.fyc {
+  display: flex;
+  flex-direction: column;
+  justify-content: center !important;
+  align-items: center;
+}
+
+.fys {
+  display: flex;
+  flex-direction: column;
+  justify-content: center !important;
+  align-items: start;
+}
+
 .fxsb {
   display: flex;
   justify-content: space-between !important;
@@ -502,20 +535,33 @@ div.el-divider {
   flex-wrap: wrap;
 }
 
-.header-logo,
-.header-title {
-  padding: 4px 10px;
-}
-
-.header-title h1 {
-  font-size: 16px;
-  font-weight: 300;
+h1.el-text {
+  --el-text-font-size: 48px;
   letter-spacing: -0.5px
 }
 
-.header-title h2 {
+h2.el-text {
+  --el-text-font-size: 32px;
+  letter-spacing: -0.5px
+}
+
+h3.el-text {
+  --el-text-font-size: 24px;
+  letter-spacing: -0.5px
+}
+
+h4.el-text {
   --el-text-font-size: 20px;
-  font-weight: 500;
+  letter-spacing: -0.5px
+}
+
+h5.el-text {
+  --el-text-font-size: 16px;
+  letter-spacing: -0.5px
+}
+
+h6.el-text {
+  --el-text-font-size: 14px;
   letter-spacing: -0.5px
 }
 
@@ -934,6 +980,30 @@ div.el-divider {
   margin-left: 12px !important;
 }
 
+.mt--8 {
+  margin-top: -8px !important;
+}
+
+.mt--10 {
+  margin-top: -10px !important;
+}
+
+.mt--12 {
+  margin-top: -12px !important;
+}
+
+.mt--16 {
+  margin-top: -16px !important;
+}
+
+.mt--20 {
+  margin-top: -20px !important;
+}
+
+.mt--24 {
+  margin-top: -24px !important;
+}
+
 .mt-0-5 {
   margin-top: 0.5px !important;
 }
@@ -968,6 +1038,10 @@ div.el-divider {
 
 .mt-18 {
   margin-top: 18px !important;
+}
+
+.mt-20 {
+  margin-top: 20px !important;
 }
 
 .mr-8 {
@@ -1059,6 +1133,11 @@ div.el-divider {
 .mtb-18 {
   margin-top: 18px !important;
   margin-bottom: 18px !important;
+}
+
+.mtb-20 {
+  margin-top: 20px !important;
+  margin-bottom: 20px !important;
 }
 
 .plr-4 {
@@ -1280,6 +1359,10 @@ div.el-divider {
   overflow-x: auto;
 }
 
+.min-h32 {
+  min-height: 32px !important;
+}
+
 .min-h46 {
   min-height: 46px !important;
 }
@@ -1294,6 +1377,14 @@ div.el-divider {
 
 .w-auto {
   width: auto !important;
+}
+
+.max-w-400 {
+  max-width: 400px !important;
+}
+
+.max-w-500 {
+  max-width: 500px !important;
 }
 
 .max-w-640 {
@@ -1601,6 +1692,18 @@ div.el-divider {
 
 .pl-10 {
   padding-left: 10px !important;
+}
+
+.pl-12 {
+  padding-left: 12px !important;
+}
+
+.pl-14 {
+  padding-left: 14px !important;
+}
+
+.pl-16 {
+  padding-left: 16px !important;
 }
 
 .pl-20 {
