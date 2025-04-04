@@ -27,7 +27,7 @@
 
     <el-card v-show="view == 'docs'">
       <div class="fxe mr-10">
-        <el-link type="primary" @click="toIndex" size="large"> {{ t('docs') }} </el-link>
+        <el-link type="primary" @click="toIndex" size="large"> {{ t('homePage') }} </el-link>
       </div>
 
       <div class="mt-20" v-html="readme"> </div>
