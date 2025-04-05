@@ -17,14 +17,9 @@ class Validator(BaseTool):
     llm: LLM = Field(default_factory=LLM, description="Language model instance")
     name: str = "validator"
     description: str = _VALIDATE_DESCRIPTION
-    parameters: dict = {
-        "type": "object",
-        "properties": {
-        },
-        "required": [],
-    }
+    parameters: dict = {}
 
-    async def validate(self, request: str, content: str):
+    async def validate(self, request: str, history: str):
         """Abstract method for result validate logic.
 
         Args:
@@ -32,7 +27,7 @@ class Validator(BaseTool):
         """
         system_content = TEXT_VALIDATION_PROMPT
         user_content = USER_CONTENT.format(
-            request=request, content=content
+            request=request, history=history
         )
 
         feedback = await self.llm.ask(
@@ -41,6 +36,6 @@ class Validator(BaseTool):
         )
         return feedback
 
-    async def execute(self, request: str, content: str) -> str:
+    async def execute(self, request: str, history: str) -> str:
         """Finish the current execution"""
-        return await self.validate(request, content)
+        return await self.validate(request, history)

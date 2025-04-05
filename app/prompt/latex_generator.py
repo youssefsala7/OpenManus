@@ -1,4 +1,4 @@
-SYSTEM_PROMPT = r"""
+SYSTEM_PROMPT = """
 You are an expert LaTeX agent tasked with generating a high-quality and self-contained **Beamer presentation** in LaTeX. Follow the instructions precisely:
 
 ---
@@ -52,5 +52,5 @@ USER_CONTENT = """
 ---
 
 ## Current Task Latest Result:
-{content}
+{history}
 """

@@ -14,18 +14,9 @@ class LatexGenerator(BaseTool):
     llm: LLM = Field(default_factory=LLM, description="Language model instance")
     name: str = "latexgenerator"
     description: str = _Latex_Generator_DESCRIPTION
-    parameters: dict = {
-        "type": "object",
-        "properties": {
-            "request": {
-                "type": "string",
-                "description": "The overall request of this task.",
-            }
-        },
-        "required": ["request","content"],
-    }
+    parameters: dict = {}
 
-    async def generate(self, request: str, content: str=""):
+    async def generate(self, request: str, history: str=""):
         """Abstract method for result validate logic.
 
         Args:
@@ -33,7 +24,7 @@ class LatexGenerator(BaseTool):
         """
         system_content = SYSTEM_PROMPT
         user_content = USER_CONTENT.format(
-            request=request, content=content
+            request=request, history=history
         )
 
         feedback = await self.llm.ask(
@@ -42,6 +33,6 @@ class LatexGenerator(BaseTool):
         )
         return feedback
 
-    async def execute(self, request: str, content: str="") -> str:
+    async def execute(self, request: str, history: str="") -> str:
         """Finish the current execution"""
-        return await self.generate(request, content)
+        return await self.generate(request, history)

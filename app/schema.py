@@ -201,10 +201,6 @@ class Memory(BaseModel):
         """Add multiple messages to memory"""
         self.messages.extend(messages)
 
-    def get_index_messages(self, n: int):
-        """Get messages of index n"""
-        return self.messages[n]
-
     def clear(self) -> None:
         """Clear all messages"""
         self.messages.clear()

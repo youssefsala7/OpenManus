@@ -53,7 +53,6 @@ class ToolCallAgent(ReActAgent):
                 tools=self.available_tools.to_params(),
                 tool_choice=self.tool_choices,
             )
-
         except ValueError:
             raise
         except Exception as e:
@@ -178,13 +177,7 @@ class ToolCallAgent(ReActAgent):
 
             # Execute the tool
             logger.info(f"🔧 Activating tool: '{name}'...")
-            if name == 'validator' or name =="latexgenerator":
-                args['request'] = self.memory.get_index_messages(0)
-                args['content'] = str(self.memory)
-
-                result = await self.available_tools.execute(name=name, tool_input=args)
-            else:
-                result = await self.available_tools.execute(name=name, tool_input=args)
+            result = await self.available_tools.execute(name=name, tool_input=args)
 
             # Handle special tools
             await self._handle_special_tool(name=name, result=result)
