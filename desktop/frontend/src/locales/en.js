@@ -80,5 +80,5 @@ export default {
   startOpenManusService: "Start OpenManus Service, Please Wait...",
   initConfigFirst: "Please init config first",
   openManusIsStarting: "OpenManus is starting, please wait...",
-  homePage: "Home Page",
+  homePage: "HomePage",
 }

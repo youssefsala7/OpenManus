@@ -1,11 +1,13 @@
 <template>
-  <div class="main-content">
-
-    <el-card class="index" v-show="view == 'index'">
-      <div class="fxe mr-10">
+  <div>
+    <el-card class="index" body-style="height: 100%;" v-show="view == 'index'">
+      <div class="fc hp-100">
+      <div class="fxe mr-10 wp-100">
         <el-link type="primary" @click="toDocs" size="large"> {{ t('docs') }} </el-link>
       </div>
 
+
+      <div class="body-content">
       <div class="welcome">
         <el-text tag="h1">{{ t('welcomeUseOpenManus') }}</el-text>
       </div>
@@ -22,30 +24,30 @@
       <div class="fxc mtb-20">
         <el-button type="primary" @click="getStarted" size="large"> {{ t('getStarted') }} </el-button>
       </div>
-
+    </div>
+    </div>
     </el-card>
 
-    <el-card v-show="view == 'docs'">
-      <div class="fxe mr-10">
-        <el-link type="primary" @click="toIndex" size="large"> {{ t('homePage') }} </el-link>
-      </div>
-
-      <div class="mt-20" v-html="readme"> </div>
+    <el-card class="mb-0" v-show="view == 'docs'">
+      <el-scrollbar>
+        <div class="fxe mr-10">
+          <el-link type="primary" @click="toIndex" size="large"> {{ t('homePage') }} </el-link>
+        </div>
+        <div class="mt-20" v-html="readme"> </div>
+      </el-scrollbar>
     </el-card>
   </div>
 
 </template>
 
 <script setup>
-import { ref, inject, onMounted } from 'vue'
-import { useRoute, useRouter } from "vue-router"
+import { ref, onMounted } from 'vue'
+import { useRouter } from "vue-router"
 import { useConfig } from '@/store/config'
 import { useI18n } from 'vue-i18n'
 import { marked } from 'marked'
 import { useDark } from '@vueuse/core'
 
-const utils = inject('utils')
-const route = useRoute()
 const router = useRouter()
 const config = useConfig()
 const { t } = useI18n()
@@ -83,7 +85,16 @@ function getStarted() {
 <style scoped>
 .index {
   min-height: 540px;
-  height: calc(100vh - 32px);
+  height: 100vh;
+  margin-bottom: 0px;
+}
+
+.body-content {
+ flex-grow: 1;
+ display: flex;
+ flex-direction: column;
+ justify-content: center;
+ align-items: center;
 }
 
 .welcome {

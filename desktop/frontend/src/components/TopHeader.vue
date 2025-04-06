@@ -30,7 +30,7 @@
     <!-- 右侧 -->
     <div class="fxc">
       <div class="mlr-8">
-        <el-switch v-model="isDark" :active-action-icon="Moon" :inactive-action-icon="Sunny" width="40"
+        <el-switch v-model="isDark" :active-action-icon="Moon" :inactive-action-icon="Sunny" width="32"
           style="--el-switch-on-color: #4c4d4f; --el-switch-off-color: #f2f2f2;" />
       </div>
 
@@ -188,5 +188,10 @@ function refresh() {
   width: 40px;
   height: 30px;
   padding: 0 5px;
+}
+
+:deep(.el-switch span.el-switch__core) {
+  width: 32px !important;
+  min-width: 32px!important;
 }
 </style>
