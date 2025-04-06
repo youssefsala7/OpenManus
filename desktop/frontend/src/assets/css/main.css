@@ -451,6 +451,10 @@ div.el-divider {
   align-items: center;
 }
 
+.fr {
+  display: flex;
+}
+
 .fc {
   display: flex;
   flex-direction: column;
@@ -1545,6 +1549,10 @@ h6.el-text {
 
 .ml-12 {
   margin-left: 12px !important;
+}
+
+.mb-0 {
+  margin-bottom: 0px !important;
 }
 
 .mb-5 {

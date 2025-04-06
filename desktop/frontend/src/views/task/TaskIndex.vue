@@ -66,7 +66,8 @@
     </el-scrollbar>
 
     <div class="ctrl-area">
-      <div class="task-area wp-100" v-show="!newTaskFlag">
+      <!-- 暂时隐藏该区域 v-show="!newTaskFlag" -->
+      <div class="task-area wp-100" v-show="false">
         <div class="generated fxc">
           <div class="generated-label">{{ t('generatedContent') }}</div>
           <div class="generated-folder">You Can Check Generated Files Here, This Function Is In Developing.</div>
@@ -75,7 +76,6 @@
 
       <div class="input-area">
         <div class="progress-area w-80">
-          <!-- progress-wrap是flex-column布局,器元素高度不会撑开父元素高度 -->
           <div class="progress-wrap">
             <el-progress type="dashboard" class="mt-10" :percentage="taskInfo.percentage"
               :status="taskInfo.progressStatus" :stroke-width="6" :width="60" v-show="taskInfo.status != null">

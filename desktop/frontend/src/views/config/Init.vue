@@ -32,6 +32,7 @@
                   :striped-flow="envLibDownloadProgress.status != 'success'" :duration="10" class="mtb-10" />
                 <div class="wp-100">
                   <el-text class="download-progress-tips">{{ t('envLibDownloadTips') }}</el-text>
+                  <br />
                   <el-text class="download-progress-tips" truncated>
                     {{ envLibDownloadProgress.text }}
                   </el-text>
