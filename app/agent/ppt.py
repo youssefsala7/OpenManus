@@ -16,7 +16,7 @@ class PPTAgent(FixedToolCallAgent):
     description: str = "An AI-driven generation agent that produces answer with validation process."
 
     available_tools: ToolCollection = ToolCollection(
-        LatexGenerator(), Validator()
+        LatexGenerator(), Validator(), Terminate()
     )
 
     fixed_tools: List[Dict[str, Any]] = [
