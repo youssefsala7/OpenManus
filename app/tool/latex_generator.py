@@ -4,17 +4,16 @@ from pydantic import Field
 from app.prompt.latex_generator import SYSTEM_PROMPT, USER_CONTENT
 
 
-# _Latex_Generator_DESCRIPTION = """
-# This agent generates complete, high-quality LaTeX documents with a focus on Beamer presentations. It accepts topic-specific input and produces fully self-contained LaTeX source code, including all required packages, structures, and rich content elements such as equations, figures, and formatted text. The agent ensures completeness by avoiding any placeholders or incomplete sections.
+_Latex_Generator_DESCRIPTION = """
+This agent generates complete, high-quality LaTeX documents with a focus on Beamer presentations. It accepts topic-specific input and produces fully self-contained LaTeX source code, including all required packages, structures, and rich content elements such as equations, figures, and formatted text. The agent ensures completeness by avoiding any placeholders or incomplete sections.
 
-# In addition to generation, the agent supports iterative refinement: it evaluates and improves the generated LaTeX code based on validation feedback to ensure correctness, formatting quality, and logical structure. The final output is ready for immediate compilation and professional presentation use.
-# """
+In addition to generation, the agent supports iterative refinement: it evaluates and improves the generated LaTeX code based on validation feedback to ensure correctness, formatting quality, and logical structure. The final output is ready for immediate compilation and professional presentation use.
+"""
 
 class LatexGenerator(BaseTool):
     llm: LLM = Field(default_factory=LLM, description="Language model instance")
     name: str = "latexgenerator"
-    # description: str = _Latex_Generator_DESCRIPTION
-    description: str = 'a helpful agent'
+    description: str = _Latex_Generator_DESCRIPTION
     parameters: dict = {}
 
     async def generate(self, request: str, history: str=""):
