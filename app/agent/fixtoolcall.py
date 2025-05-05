@@ -29,7 +29,7 @@ class FixedToolCallAgent(ToolCallAgent):
     )
 
 
-    max_steps: int = 4
+    max_steps: int = 7
     curr_step: int = 0
 
 
