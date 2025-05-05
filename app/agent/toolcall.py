@@ -74,6 +74,8 @@ class ToolCallAgent(ReActAgent):
         self.tool_calls = tool_calls = (
             response.tool_calls if response and response.tool_calls else []
         )
+        print(self.tool_calls)
+        exit()
         content = response.content if response and response.content else ""
 
         # Log response info

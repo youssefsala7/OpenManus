@@ -1,11 +1,11 @@
 import asyncio
 
-from app.agent.ppt import PPTAgent
+from app.agent.fixtoolcall import FixedToolCallAgent
 from app.logger import logger
 
 
 async def main():
-    agent = PPTAgent()
+    agent = FixedToolCallAgent()
     try:
         prompt = '''
 1. Lecture slide:
@@ -24,9 +24,7 @@ Note that:
         logger.info("Request processing completed.")
     except KeyboardInterrupt:
         logger.warning("Operation interrupted.")
-    finally:
-        # Ensure agent resources are cleaned up before exiting
-        await agent.cleanup()
+
 
 
 if __name__ == "__main__":
