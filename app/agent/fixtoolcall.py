@@ -64,7 +64,6 @@ class FixedToolCallAgent(ToolCallAgent):
 
         # assign to self.tool_calls just like the SDK would
         self.tool_calls = tool_calls = [tool_call]
-        print(self.tool_calls)
         logger.info(
             f"🛠️ {self.name} selected {len(tool_calls) if tool_calls else 0} tools to use"
         )
