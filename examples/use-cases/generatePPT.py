@@ -1,11 +1,11 @@
 import asyncio
 
-from app.agent.ppt import FixedToolCallAgent
+from app.agent.ppt import PPTAgent
 from app.logger import logger
 
 
 async def main():
-    agent = FixedToolCallAgent()
+    agent = PPTAgent()
     try:
         prompt = '''
 1. Lecture slide:
