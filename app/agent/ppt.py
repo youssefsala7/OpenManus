@@ -1,16 +1,15 @@
 import json
-from typing import Any, Dict, List
+import uuid
 
-from pydantic import Field
-from app.tool import Terminate, Validator, ToolCollection, LatexGenerator
+from openai.types.chat.chat_completion_message_tool_call import (
+    ChatCompletionMessageToolCall,
+    Function,
+)
+
 from app.agent.toolcall import ToolCallAgent
 from app.logger import logger
-from app.schema import AgentState, Message, ToolCall
-from app.tool import (
-    ToolCollection,
-)
-import uuid
-from openai.types.chat.chat_completion_message_tool_call import ChatCompletionMessageToolCall, Function
+from app.tool import LatexGenerator, ToolCollection, Validator
+
 
 class PPTAgent(ToolCallAgent):
     """
@@ -24,21 +23,16 @@ class PPTAgent(ToolCallAgent):
         "potentially terminating early based on validator feedback."
     )
 
-    available_tools: ToolCollection = ToolCollection(
-        LatexGenerator(), Validator()
-    )
-
+    available_tools: ToolCollection = ToolCollection(LatexGenerator(), Validator())
 
     max_steps: int = 7
     curr_step: int = 0
-
 
     async def think(self) -> bool:
         """Process current state and decide next actions using tools"""
         # pick which of your tools to call
         tool_idx = self.curr_step % len(self.available_tools.tools)
         tool_meta = self.available_tools.tools[tool_idx]
-
 
         payload = {
             "request": self.memory.messages[0].content,
@@ -57,9 +51,7 @@ class PPTAgent(ToolCallAgent):
 
         # wrap it up in a ChatCompletionMessageToolCall
         tool_call = ChatCompletionMessageToolCall(
-            id=call_id,
-            function=func_call,
-            type= "function"
+            id=call_id, function=func_call, type="function"
         )
 
         # assign to self.tool_calls just like the SDK would

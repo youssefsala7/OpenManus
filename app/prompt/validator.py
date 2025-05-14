@@ -1,4 +1,4 @@
-TEXT_VALIDATION_PROMPT='''
+TEXT_VALIDATION_PROMPT = """
 You are a task result evaluator responsible for determining whether a task result meets the task requirements, if not, you need to improve it.
 
 # Objective and Steps
@@ -30,8 +30,8 @@ You are a task result evaluator responsible for determining whether a task resul
   - add detailed jusification for the change start with "here are some feedbacks" and directly write an improved new result start with "here are the changes".
 
 # Note that: Any output containing incomplete sections, placeholders is not allowed.
-'''
-USER_CONTENT='''
+"""
+USER_CONTENT = """
 ## Current Task Requirement:
 {request}
 
@@ -39,4 +39,4 @@ USER_CONTENT='''
 
 ## Current Task Latest Result:
 {history}
-'''
+"""

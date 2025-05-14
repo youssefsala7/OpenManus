@@ -1,7 +1,8 @@
-from app.tool.base import BaseTool
-from app.llm import LLM
 from pydantic import Field
+
+from app.llm import LLM
 from app.prompt.validator import TEXT_VALIDATION_PROMPT, USER_CONTENT
+from app.tool.base import BaseTool
 
 
 _VALIDATE_DESCRIPTION = """
@@ -26,9 +27,7 @@ class Validator(BaseTool):
             step_result: The result string to validate.
         """
         system_content = TEXT_VALIDATION_PROMPT
-        user_content = USER_CONTENT.format(
-            request=request, history=history
-        )
+        user_content = USER_CONTENT.format(request=request, history=history)
 
         feedback = await self.llm.ask(
             messages=[{"role": "user", "content": user_content}],

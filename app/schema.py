@@ -125,7 +125,6 @@ class Message(BaseModel):
 
         return f"{header}\n{content.strip()}"
 
-
     @classmethod
     def user_message(
         cls, content: str, base64_image: Optional[str] = None
@@ -209,11 +208,9 @@ class Memory(BaseModel):
         """Get n most recent messages"""
         return self.messages[-n:]
 
-
     def to_dict_list(self) -> List[dict]:
         """Convert messages to list of dicts"""
         return [msg.to_dict() for msg in self.messages]
-
 
     def to_string(self) -> str:
         """
