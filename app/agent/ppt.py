@@ -12,7 +12,7 @@ from app.tool import (
 import uuid
 from openai.types.chat.chat_completion_message_tool_call import ChatCompletionMessageToolCall, Function
 
-class FixedToolCallAgent(ToolCallAgent):
+class PPTAgent(ToolCallAgent):
     """
     Agent that executes a fixed sequence of tools, potentially terminating
     early if the validator tool indicates completion.
