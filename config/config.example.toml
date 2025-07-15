@@ -95,6 +95,11 @@ temperature = 0.0                          # Controls randomness for vision mode
 #timeout = 300
 #network_enabled = true
 
+# [cloud_sandbox]
+# e2b_api_key = "YOUR_E2B_API_KEY"
+# domain = "YOUR_E2B_DOMAIN"
+
+
 # MCP (Model Context Protocol) configuration
 [mcp]
 server_reference = "app.mcp.server" # default server module reference
@@ -103,3 +108,5 @@ server_reference = "app.mcp.server" # default server module reference
 # Your can add additional agents into run-flow workflow to solve different-type tasks.
 [runflow]
 use_data_analysis_agent = false     # The Data Analysi Agent to solve various data analysis tasks
+
+

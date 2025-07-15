@@ -167,6 +167,7 @@ class AppConfig(BaseModel):
     run_flow_config: Optional[RunflowSettings] = Field(
         None, description="Run flow configuration"
     )
+    cloud_sandbox: Optional[dict] = Field(None, description="Cloud sandbox configuration")
 
     class Config:
         arbitrary_types_allowed = True
@@ -283,6 +284,7 @@ class Config:
             run_flow_settings = RunflowSettings(**run_flow_config)
         else:
             run_flow_settings = RunflowSettings()
+        cloud_sandbox_config = raw_config.get("cloud_sandbox", {})
         config_dict = {
             "llm": {
                 "default": default_settings,
@@ -296,6 +298,7 @@ class Config:
             "search_config": search_settings,
             "mcp_config": mcp_settings,
             "run_flow_config": run_flow_settings,
+            "cloud_sandbox": cloud_sandbox_config,
         }
 
         self._config = AppConfig(**config_dict)
@@ -325,6 +328,10 @@ class Config:
     def run_flow_config(self) -> RunflowSettings:
         """Get the Run Flow configuration"""
         return self._config.run_flow_config
+
+    @property
+    def cloud_sandbox(self) -> dict:
+        return getattr(self._config, "cloud_sandbox", {})
 
     @property
     def workspace_root(self) -> Path:
