@@ -10,4 +10,5 @@ COPY . .
 
 RUN uv pip install --system -r requirements.txt
 
-CMD ["bash"]
+EXPOSE 3000
+CMD ["uvicorn", "openmanus.main:app", "--host", "0.0.0.0", "--port", "3000"]
