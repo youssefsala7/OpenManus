@@ -2,7 +2,6 @@
 
 FROM python:3.12-slim
 
-# where your code lives in the container
 WORKDIR /app/OpenManus
 
 # install system deps
@@ -10,17 +9,17 @@ RUN apt-get update \
  && apt-get install -y --no-install-recommends git curl \
  && rm -rf /var/lib/apt/lists/*
 
-# copy just the requirements first (to get layer caching)
+# copy requirements first (layer cache)
 COPY requirements.txt .
 
-# install Python deps (including uvicorn)
+# install python deps + uvicorn
 RUN pip install --no-cache-dir -r requirements.txt uvicorn
 
-# now copy the rest of your app
+# copy your app code
 COPY . .
 
-# tell Docker/Coolify that you're listening on 3000
+# tell Docker we listen on 3000
 EXPOSE 3000
 
-# launch your FastAPI app
+# launch FastAPI
 CMD ["uvicorn", "openmanus.main:app", "--host", "0.0.0.0", "--port", "3000"]
